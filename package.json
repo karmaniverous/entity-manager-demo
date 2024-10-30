@@ -94,5 +94,5 @@
     "test": "dotenvx run --quiet --log-level=LOG_LEVEL=debug -- nyc mocha"
   },
   "type": "module",
-  "version": "0.0.0"
+  "version": "0.0.1"
 }
