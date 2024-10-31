@@ -2,6 +2,7 @@ import {
   type Config,
   EntityManager,
   type EntityMap,
+  type ItemMap,
 } from '@karmaniverous/entity-manager';
 import type { Entity } from '@karmaniverous/entity-tools';
 
@@ -189,3 +190,10 @@ const config: Config<MyEntityMap> = {
 
 // Configure & export EntityManager instance.
 export const entityManager = new EntityManager(config);
+
+// Construct ItemMap type from MyEntityMap.
+type MyItemMap = ItemMap<MyEntityMap>;
+
+// Export EmailItem & UserItem types for use in other modules.
+export type EmailItem = MyItemMap['email'];
+export type UserItem = MyItemMap['user'];
