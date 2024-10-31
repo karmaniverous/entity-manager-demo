@@ -9,7 +9,7 @@ interface Email extends Entity {
   created: number;
   email: string;
   userId: string;
-  userHashKey: never;
+  userHashKey: never; // generated
 }
 
 interface User extends Entity {
@@ -17,15 +17,15 @@ interface User extends Entity {
   created: number;
   firstName: string;
   firstNameCanonical: string;
-  firstNameRangeKey: never;
+  firstNameRangeKey: never; // generated
   lastName: string;
   lastNameCanonical: string;
-  lastNameRangeKey: never;
+  lastNameRangeKey: never; // generated
   phone?: string;
   updated: number;
-  userBeneficiaryHashKey: never;
+  userBeneficiaryHashKey: never; // generated
   userId: string;
-  userHashKey: never;
+  userHashKey: never; // generated
 }
 
 interface MyEntityMap extends EntityMap {
