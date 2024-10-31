@@ -64,7 +64,7 @@ const config: Config<MyEntityMap> = {
 
       // Email entity generated properties.
       // These keys must match the ones with never types in the Email interface.
-      // These properties are marked with a ⚙️ in the [table design](https://karmanivero.us/projects/entity-manager/evolving-a-nosql-db-schema/#table-properties)
+      // These properties are marked with a ⚙️ in the table design at https://karmanivero.us/projects/entity-manager/evolving-a-nosql-db-schema/#table-properties
       generated: {
         userHashKey: {
           atomic: true,
