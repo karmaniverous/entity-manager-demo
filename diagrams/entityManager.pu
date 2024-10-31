@@ -1,0 +1,32 @@
+@startuml entityManager
+
+allowmixing
+
+left to right direction
+
+file "entityManager.ts" as entityManagerTs {
+    interface User
+    interface Email
+    interface HashKey
+    interface RangeKey
+    interface TranscodeMap
+    object config
+    cloud EntityManager
+
+    Email --> EntityManager
+    User --> EntityManager
+    HashKey --> EntityManager
+    RangeKey --> EntityManager
+    TranscodeMap --> EntityManager
+    config --> EntityManager
+
+    interface UserItem
+    interface EmailItem
+    object entityManager
+
+    EntityManager --> EmailItem: exports
+    EntityManager --> UserItem: exports
+    EntityManager --> entityManager: exports
+}
+
+@enduml

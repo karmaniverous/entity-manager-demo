@@ -1,0 +1,27 @@
+@startuml search
+
+allowmixing
+
+left to right direction
+
+file "entityManager.ts" as entityManagerTs {
+    interface UserItem
+    object entityManager
+}
+
+file "entityClient.ts" as entitClientTs {
+    object entityClient
+}
+
+file "user-search.ts" as searchTs {
+    object handler
+
+    entityManager --* handler  
+    UserItem --* handler 
+    handler *-- entityClient
+
+    object shardQueryMapBuilder
+    shardQueryMapBuilder -o handler
+}
+
+@enduml

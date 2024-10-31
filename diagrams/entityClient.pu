@@ -1,0 +1,18 @@
+@startuml entityClient
+
+allowmixing
+
+left to right direction
+
+file "entityClient.ts" as entityClientTs {
+    object options
+    class EntityClient
+
+    options --> EntityClient
+
+    object entityClient
+
+    EntityClient --> entityClient: exports
+}
+
+@enduml
