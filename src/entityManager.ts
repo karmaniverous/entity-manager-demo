@@ -10,8 +10,8 @@ import type { Entity } from '@karmaniverous/entity-tools';
 interface Email extends Entity {
   created: number;
   email: string;
-  userId: string;
   userHashKey: never; // generated
+  userId: string;
 }
 
 // User interface. never types indicate generated properties.
@@ -27,8 +27,8 @@ interface User extends Entity {
   phone?: string;
   updated: number;
   userBeneficiaryHashKey: never; // generated
-  userId: string;
   userHashKey: never; // generated
+  userId: string;
 }
 
 // Entity interfaces combined into EntityMap.
