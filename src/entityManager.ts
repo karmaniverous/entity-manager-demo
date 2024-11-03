@@ -6,6 +6,8 @@ import {
 } from '@karmaniverous/entity-manager';
 import type { Entity } from '@karmaniverous/entity-tools';
 
+import { logger } from './logger';
+
 // Email interface. never types indicate generated properties.
 interface Email extends Entity {
   created: number;
@@ -99,8 +101,8 @@ const config: Config<MyEntityMap> = {
         // properties. Any ungenerated properties MUST be included
         // in the entityTranscodes object below. Property order is
         // not significant.
-        created: ['hashKey', 'rangeKey', 'created'],
-        userCreated: ['hashKey', 'rangeKey', 'userHashKey', 'created'],
+        created: { hashKey: 'hashKey', rangeKey: 'created' },
+        userCreated: { hashKey: 'userHashKey', rangeKey: 'created' },
       },
 
       // Transcodes for ungenerated properties used as generated
@@ -139,41 +141,31 @@ const config: Config<MyEntityMap> = {
         },
       },
       indexes: {
-        created: ['hashKey', 'rangeKey', 'created'],
-        firstName: ['hashKey', 'rangeKey', 'firstNameRangeKey'],
-        lastname: ['hashKey', 'rangeKey', 'lastNameRangeKey'],
-        phone: ['hashKey', 'rangeKey', 'phone'],
-        updated: ['hashKey', 'rangeKey', 'updated'],
-        userBeneficiaryCreated: [
-          'hashKey',
-          'rangeKey',
-          'userBeneficiaryHashKey',
-          'created',
-        ],
-        userBeneficiaryFirstName: [
-          'hashKey',
-          'rangeKey',
-          'userBeneficiaryHashKey',
-          'firstNameRangeKey',
-        ],
-        userBeneficiaryLastName: [
-          'hashKey',
-          'rangeKey',
-          'userBeneficiaryHashKey',
-          'lastNameRangeKey',
-        ],
-        userBeneficiaryPhone: [
-          'hashKey',
-          'rangeKey',
-          'userBeneficiaryHashKey',
-          'phone',
-        ],
-        userBeneficiaryUpdated: [
-          'hashKey',
-          'rangeKey',
-          'userBeneficiaryHashKey',
-          'updated',
-        ],
+        created: { hashKey: 'hashKey', rangeKey: 'created' },
+        firstName: { hashKey: 'hashKey', rangeKey: 'firstNameRangeKey' },
+        lastName: { hashKey: 'hashKey', rangeKey: 'lastNameRangeKey' },
+        phone: { hashKey: 'hashKey', rangeKey: 'phone' },
+        updated: { hashKey: 'hashKey', rangeKey: 'updated' },
+        userBeneficiaryCreated: {
+          hashKey: 'userBeneficiaryHashKey',
+          rangeKey: 'created',
+        },
+        userBeneficiaryFirstName: {
+          hashKey: 'userBeneficiaryHashKey',
+          rangeKey: 'firstNameRangeKey',
+        },
+        userBeneficiaryLastName: {
+          hashKey: 'userBeneficiaryHashKey',
+          rangeKey: 'lastNameRangeKey',
+        },
+        userBeneficiaryPhone: {
+          hashKey: 'userBeneficiaryHashKey',
+          rangeKey: 'phone',
+        },
+        userBeneficiaryUpdated: {
+          hashKey: 'userBeneficiaryHashKey',
+          rangeKey: 'updated',
+        },
       },
       elementTranscodes: {
         beneficiaryId: 'string',
@@ -189,7 +181,7 @@ const config: Config<MyEntityMap> = {
 };
 
 // Configure & export EntityManager instance.
-export const entityManager = new EntityManager(config);
+export const entityManager = new EntityManager(config, logger);
 
 // Construct ItemMap type from MyEntityMap.
 type MyItemMap = ItemMap<MyEntityMap>;

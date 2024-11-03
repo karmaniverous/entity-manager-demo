@@ -4,6 +4,10 @@ allowmixing
 
 left to right direction
 
+file "logger.ts" as loggerTs {
+    object logger
+}
+
 file "entityManager.ts" as entityManagerTs {
     interface UserItem
     object entityManager
@@ -11,6 +15,8 @@ file "entityManager.ts" as entityManagerTs {
 
 file "entityClient.ts" as entitClientTs {
     object entityClient
+
+    logger --* entityClient 
 }
 
 file "user-search.ts" as searchTs {
@@ -19,6 +25,7 @@ file "user-search.ts" as searchTs {
     entityManager --* handler  
     UserItem --* handler 
     handler *-- entityClient
+    entityManager *-- logger
 
     object shardQueryMapBuilder
     shardQueryMapBuilder -o handler
