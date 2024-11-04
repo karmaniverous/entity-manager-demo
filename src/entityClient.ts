@@ -1,6 +1,6 @@
 import { EntityClient } from '@karmaniverous/entity-client-dynamodb';
 
-import { logger } from './logger';
+import { errorLogger } from './logger';
 
 export const entityClient = new EntityClient({
   credentials: {
@@ -8,6 +8,6 @@ export const entityClient = new EntityClient({
     secretAccessKey: 'fakeSecretAccessKey',
   },
   endpoint: 'http://localhost:8000',
-  logger,
+  logger: errorLogger,
   region: 'local',
 });

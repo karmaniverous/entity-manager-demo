@@ -6,7 +6,7 @@ import {
 } from '@karmaniverous/entity-manager';
 import type { Entity } from '@karmaniverous/entity-tools';
 
-import { logger } from './logger';
+import { errorLogger } from './logger';
 
 // Email interface. never types indicate generated properties.
 interface Email extends Entity {
@@ -181,7 +181,7 @@ const config: Config<MyEntityMap> = {
 };
 
 // Configure & export EntityManager instance.
-export const entityManager = new EntityManager(config, logger);
+export const entityManager = new EntityManager(config, errorLogger);
 
 // Construct ItemMap type from MyEntityMap.
 type MyItemMap = ItemMap<MyEntityMap>;
