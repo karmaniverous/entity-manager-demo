@@ -4,25 +4,28 @@ allowmixing
 
 left to right direction
 
-file "logger.ts" as loggerTs {
+database DynamoDB
+
+file "logger.ts" as loggerTs #LightCyan {
     object logger
 }
 
-file "entityManager.ts" as entityManagerTs {
+file "entityManager.ts" as entityManagerTs #LightCyan {
     interface User
     interface UserItem
     object entityManager
 }
 
-file "entityClient.ts" as entitClientTs {
+file "entityClient.ts" as entitClientTs #LightCyan {
     object entityClient
 
     logger --* entityClient 
 }
 
-file "user-handler.ts" as searchTs {
+file "user-handler.ts" as searchTs #Cyan {
     object handler
 
+    handler <-> DynamoDB
     User --* handler 
     UserItem --* handler 
     entityManager --* handler  
