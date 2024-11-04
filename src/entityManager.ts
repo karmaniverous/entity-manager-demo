@@ -9,7 +9,7 @@ import type { Entity, PropertiesNotOfType } from '@karmaniverous/entity-tools';
 import { errorLogger } from './logger';
 
 // Email entity interface. never types indicate generated properties.
-interface EmailEntity extends Entity {
+export interface EmailEntity extends Entity {
   created: number;
   email: string;
   userHashKey: never; // generated
@@ -20,7 +20,7 @@ interface EmailEntity extends Entity {
 export type Email = Pick<EmailEntity, PropertiesNotOfType<EmailEntity, never>>;
 
 // User entity interface. never types indicate generated properties.
-interface UserEntity extends Entity {
+export interface UserEntity extends Entity {
   beneficiaryId: string;
   created: number;
   firstName: string;
@@ -40,7 +40,7 @@ interface UserEntity extends Entity {
 export type User = Pick<UserEntity, PropertiesNotOfType<UserEntity, never>>;
 
 // Entity interfaces combined into EntityMap.
-interface MyEntityMap extends EntityMap {
+export interface MyEntityMap extends EntityMap {
   email: EmailEntity;
   user: UserEntity;
 }

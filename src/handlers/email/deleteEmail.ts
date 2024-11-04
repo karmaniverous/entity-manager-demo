@@ -5,7 +5,7 @@ import { readEmail } from './readEmail';
 /**
  * Delete an email record from the database.
  *
- * @param record - Unique id of the email record to delete.
+ * @param email - Unique id of the email record to delete.
  *
  * @throws Error if email record does not exist.
  */
