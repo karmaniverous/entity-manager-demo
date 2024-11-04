@@ -1,0 +1,21 @@
+@startuml email-types
+
+skinparam classAttributeIconSize 0
+
+interface Email {
+    {field} created: number
+    {field} email: string
+    {field} userId: string
+
+}
+
+interface EmailItem {
+    {field} created: number
+    {field} email: string
+    {field} [hashKey]: string
+    {field} [rangeKey]: string
+    {field} [userHashKey]: string
+    {field} userId: string
+}
+
+@enduml

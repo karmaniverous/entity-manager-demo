@@ -1,0 +1,35 @@
+@startuml user-types
+
+skinparam classAttributeIconSize 0
+
+interface User {
+    {field} beneficiaryId: string
+    {field} created: number
+    {field} firstName: string
+    {field} firstNameCanonical: string
+    {field} lastName: string
+    {field} lastNameCanonical: string
+    {field} [phone]: string
+    {field} updated: number
+    {field} userId: string
+}
+
+interface UserItem {
+    {field} beneficiaryId: string
+    {field} created: number
+    {field} firstName: string
+    {field} firstNameCanonical: string
+    {field} firstNameRangeKey: string
+    {field} lastName: string
+    {field} lastNameCanonical: string
+    {field} lastNameRangeKey: string
+    {field} [hashKey]: string
+    {field} [rangeKey]: string
+    {field} [phone]: string
+    {field} updated: number
+    {field} [userBeneficiaryHashKey]: string
+    {field} [userHashKey]: string
+    {field} userId: string
+}
+
+@enduml
