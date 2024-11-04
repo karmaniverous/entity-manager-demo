@@ -24,7 +24,7 @@ file "entityClient.ts" as entitClientTs #LightCyan {
 file "user-handler.ts" as searchTs #Cyan {
     object handler
 
-    handler <- params
+    handler *- params
     User <|.. params 
     UserItem <|.. handler 
     entityManager --o handler  
