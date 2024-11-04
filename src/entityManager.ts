@@ -4,20 +4,23 @@ import {
   type EntityMap,
   type ItemMap,
 } from '@karmaniverous/entity-manager';
-import type { Entity } from '@karmaniverous/entity-tools';
+import type { Entity, PropertiesNotOfType } from '@karmaniverous/entity-tools';
 
 import { errorLogger } from './logger';
 
-// Email interface. never types indicate generated properties.
-interface Email extends Entity {
+// Email entity interface. never types indicate generated properties.
+interface EmailEntity extends Entity {
   created: number;
   email: string;
   userHashKey: never; // generated
   userId: string;
 }
 
-// User interface. never types indicate generated properties.
-interface User extends Entity {
+// Email type for use outside data operations.
+export type Email = Pick<EmailEntity, PropertiesNotOfType<EmailEntity, never>>;
+
+// User entity interface. never types indicate generated properties.
+interface UserEntity extends Entity {
   beneficiaryId: string;
   created: number;
   firstName: string;
@@ -33,10 +36,13 @@ interface User extends Entity {
   userId: string;
 }
 
+// Email type for use outside data operations.
+export type User = Pick<UserEntity, PropertiesNotOfType<UserEntity, never>>;
+
 // Entity interfaces combined into EntityMap.
 interface MyEntityMap extends EntityMap {
-  email: Email;
-  user: User;
+  email: EmailEntity;
+  user: UserEntity;
 }
 
 // Current timestamp will act as break point for sharding schedule.

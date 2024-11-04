@@ -1,15 +1,19 @@
 import { ListTablesCommand } from '@aws-sdk/client-dynamodb';
+import {
+  dynamoDbLocalReady,
+  setupDynamoDbLocal,
+  teardownDynamoDbLocal,
+} from '@karmaniverous/dynamodb-local';
 import { expect } from 'chai';
 
-import { setupDynamoDbLocal, teardownDynamoDbLocal } from '../test/docker';
-import { createUserTable, dynamoDbReady } from '../test/dynamoDb';
+import { createUserTable } from '../test/dynamoDb';
 import { entityClient } from './entityClient';
 import { env } from './env';
 
 describe('entityClient', function () {
   before(async function () {
     await setupDynamoDbLocal(env.dynamoDbLocalPort);
-    await dynamoDbReady(entityClient);
+    await dynamoDbLocalReady(entityClient.client);
   });
 
   it('creates & deletes user table', async function () {
