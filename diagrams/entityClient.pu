@@ -5,14 +5,14 @@ allowmixing
 left to right direction
 
 file "logger.ts" as loggerTs #LightCyan {
-    object logger
+    object errorLogger
 }
 
 file "entityClient.ts" as entityClientTs #cyan {
     object options
     class EntityClient
 
-    logger --o EntityClient
+    errorLogger --o EntityClient
     options --* EntityClient
 
     object entityClient

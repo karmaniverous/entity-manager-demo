@@ -19,8 +19,6 @@ file "entityManager.ts" as entityManagerTs #LightCyan {
 
 file "entityClient.ts" as entitClientTs #LightCyan {
     object entityClient
-
-    logger --o entityClient 
 }
 
 file "user-handler.ts" as searchTs #Cyan {
@@ -30,9 +28,10 @@ file "user-handler.ts" as searchTs #Cyan {
     User <|.. params 
     UserItem <|.. handler 
     entityManager --o handler  
-    handler o-- entityClient
-    entityManager o-- logger
+    entityClient --o handler
+    logger -o handler
     handler <--> DynamoDB
+    entityClient -[hidden]- logger
 
     object shardQueryMapBuilder
     handler o-- shardQueryMapBuilder

@@ -5,7 +5,7 @@ allowmixing
 left to right direction
 
 file "logger.ts" as loggerTs #LightCyan {
-    object logger
+    object errorLogger
 }
 
 file "entityManager.ts" as entityManagerTs #Cyan {
@@ -17,7 +17,7 @@ file "entityManager.ts" as entityManagerTs #Cyan {
     Email --> EntityManager
     User --> EntityManager
     config --> EntityManager
-    logger --> EntityManager
+    errorLogger --> EntityManager
 
     interface EmailItem
     interface UserItem

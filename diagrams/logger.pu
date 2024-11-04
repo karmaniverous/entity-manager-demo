@@ -1,0 +1,20 @@
+@startuml logger
+
+allowmixing
+
+left to right direction
+
+file "logger.ts" as loggerTs #Cyan {
+    object console
+    object controlledProxy
+    object logger
+    object errorLogger
+    object options
+
+    console --> logger: exports
+    controlledProxy o- console 
+    controlledProxy --> errorLogger: exports
+    options -* controlledProxy
+}
+
+@enduml
