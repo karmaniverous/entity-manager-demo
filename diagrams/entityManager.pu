@@ -4,7 +4,7 @@ allowmixing
 
 left to right direction
 
-file "entityManager.ts" as entityManagerTs {
+file "entityManager.ts" as entityManagerTs #Cyan {
     interface Email
     interface User
     object config

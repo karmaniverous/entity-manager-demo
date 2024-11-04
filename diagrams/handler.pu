@@ -5,6 +5,7 @@ allowmixing
 left to right direction
 
 database DynamoDB
+object params
 
 file "logger.ts" as loggerTs #LightCyan {
     object logger
@@ -19,18 +20,19 @@ file "entityManager.ts" as entityManagerTs #LightCyan {
 file "entityClient.ts" as entitClientTs #LightCyan {
     object entityClient
 
-    logger --* entityClient 
+    logger --o entityClient 
 }
 
 file "user-handler.ts" as searchTs #Cyan {
     object handler
 
-    handler <-> DynamoDB
-    User --* handler 
-    UserItem --* handler 
-    entityManager --* handler  
-    handler *-- entityClient
-    entityManager *-- logger
+    handler <- params
+    User <|.. params 
+    UserItem <|.. handler 
+    entityManager --o handler  
+    handler o-- entityClient
+    entityManager o-- logger
+    handler <--> DynamoDB
 
     object shardQueryMapBuilder
     handler o-- shardQueryMapBuilder
