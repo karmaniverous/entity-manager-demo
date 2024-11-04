@@ -9,6 +9,7 @@ file "logger.ts" as loggerTs {
 }
 
 file "entityManager.ts" as entityManagerTs {
+    interface User
     interface UserItem
     object entityManager
 }
@@ -19,16 +20,17 @@ file "entityClient.ts" as entitClientTs {
     logger --* entityClient 
 }
 
-file "user-search.ts" as searchTs {
+file "user-handler.ts" as searchTs {
     object handler
 
-    entityManager --* handler  
+    User --* handler 
     UserItem --* handler 
+    entityManager --* handler  
     handler *-- entityClient
     entityManager *-- logger
 
     object shardQueryMapBuilder
-    shardQueryMapBuilder -o handler
+    handler o-- shardQueryMapBuilder
 }
 
 @enduml
