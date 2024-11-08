@@ -17,7 +17,7 @@ export const readEmail = async (
   });
 
   // Retrieve record from database.
-  const { Item: record } = await entityClient.getItem('user', request);
+  const { Item: record } = await entityClient.getItem('UserService', request);
 
   // Remove keys from record, type, and return.
   if (record)

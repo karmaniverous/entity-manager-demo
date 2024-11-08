@@ -20,5 +20,5 @@ export const deleteEmail = async (email: Email['email']): Promise<void> => {
   });
 
   // Delete record from database.
-  await entityClient.deleteItem('user', request);
+  await entityClient.deleteItem('UserService', request);
 };

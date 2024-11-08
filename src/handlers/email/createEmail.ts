@@ -30,7 +30,7 @@ export const createEmail = async (
   }) as Email;
 
   // Create record in database.
-  await entityClient.putItem('email', request);
+  await entityClient.putItem('UserService', request);
 
   // Return created record.
   return request;
