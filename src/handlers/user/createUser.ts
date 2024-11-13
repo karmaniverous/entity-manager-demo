@@ -2,8 +2,8 @@ import type { MakeOptional } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 import { nanoid } from 'nanoid';
 
-import { entityClient } from '../../entityClient';
-import type { User } from '../../entityManager';
+import { entityClient } from '../../entity-manager/entityClient';
+import type { User } from '../../entity-manager/User';
 
 /**
  * Create an user record in the database.
@@ -13,6 +13,8 @@ import type { User } from '../../entityManager';
  * @returns Created user record.
  *
  * @throws Error if user record already exists.
+ *
+ * @category User
  */
 export const createUser = async (
   params: MakeOptional<

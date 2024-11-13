@@ -1,7 +1,7 @@
 import type { MakeOptional } from '@karmaniverous/entity-tools';
 
-import { entityClient } from '../../entityClient';
-import type { Email } from '../../entityManager';
+import type { Email } from '../../entity-manager/Email';
+import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
 /**
@@ -12,6 +12,8 @@ import { readEmail } from './readEmail';
  * @returns Created email record.
  *
  * @throws Error if email record already exists.
+ *
+ * @category Email
  */
 export const createEmail = async (
   params: MakeOptional<Email, 'created'>,

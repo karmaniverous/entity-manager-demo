@@ -7,8 +7,8 @@ import {
 import { generateTableDefinition } from '@karmaniverous/entity-client-dynamodb';
 import { expect } from 'chai';
 
+import { env } from '../env';
 import { entityClient } from './entityClient';
-import { env } from './env';
 
 describe('entityClient', function () {
   before(async function () {

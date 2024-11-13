@@ -3,29 +3,11 @@ import {
   type ConfigMap,
   EntityManager,
 } from '@karmaniverous/entity-manager';
-import { defaultTranscodes, type Entity } from '@karmaniverous/entity-tools';
+import { defaultTranscodes } from '@karmaniverous/entity-tools';
 
-import { errorLogger } from './logger';
-
-// Email entity interface.
-export interface Email extends Entity {
-  created: number;
-  email: string;
-  userId: string;
-}
-
-// User entity interface.
-export interface User extends Entity {
-  beneficiaryId: string;
-  created: number;
-  firstName: string;
-  firstNameCanonical: string;
-  lastName: string;
-  lastNameCanonical: string;
-  phone?: string;
-  updated: number;
-  userId: string;
-}
+import { errorLogger } from '../util/logger';
+import { Email } from './Email';
+import { User } from './User';
 
 // Entity interfaces combined into EntityMap.
 export type MyConfigMap = ConfigMap<{
@@ -77,32 +59,49 @@ const config: Config<MyConfigMap> = {
     },
   },
   indexes: {
-    created: { hashKey: 'hashKey', rangeKey: 'created' },
-    firstName: { hashKey: 'hashKey', rangeKey: 'firstNameRangeKey' },
-    lastName: { hashKey: 'hashKey', rangeKey: 'lastNameRangeKey' },
-    phone: { hashKey: 'hashKey', rangeKey: 'phone' },
-    updated: { hashKey: 'hashKey', rangeKey: 'updated' },
+    created: { hashKey: 'hashKey', rangeKey: 'created', projections: [] },
+    firstName: {
+      hashKey: 'hashKey',
+      rangeKey: 'firstNameRangeKey',
+      projections: [],
+    },
+    lastName: {
+      hashKey: 'hashKey',
+      rangeKey: 'lastNameRangeKey',
+      projections: [],
+    },
+    phone: { hashKey: 'hashKey', rangeKey: 'phone', projections: [] },
+    updated: { hashKey: 'hashKey', rangeKey: 'updated', projections: [] },
     userBeneficiaryCreated: {
       hashKey: 'beneficiaryHashKey',
       rangeKey: 'created',
+      projections: [],
     },
     userBeneficiaryFirstName: {
       hashKey: 'beneficiaryHashKey',
       rangeKey: 'firstNameRangeKey',
+      projections: [],
     },
     userBeneficiaryLastName: {
       hashKey: 'beneficiaryHashKey',
       rangeKey: 'lastNameRangeKey',
+      projections: [],
     },
     userBeneficiaryPhone: {
       hashKey: 'beneficiaryHashKey',
       rangeKey: 'phone',
+      projections: [],
     },
     userBeneficiaryUpdated: {
       hashKey: 'beneficiaryHashKey',
       rangeKey: 'updated',
+      projections: [],
     },
-    userCreated: { hashKey: 'userHashKey', rangeKey: 'created' },
+    userCreated: {
+      hashKey: 'userHashKey',
+      rangeKey: 'created',
+      projections: [],
+    },
   },
   propertyTranscodes: {
     beneficiaryId: 'string',

@@ -1,5 +1,5 @@
-import { entityClient } from '../../entityClient';
-import { type User } from '../../entityManager';
+import { entityClient } from '../../entity-manager/entityClient';
+import type { User } from '../../entity-manager/User';
 
 /**
  * Read a user record from the database.
@@ -7,6 +7,8 @@ import { type User } from '../../entityManager';
  * @param userId - User record unique id.
  *
  * @returns User record or `undefined` if not found.
+ *
+ * @category User
  */
 export const readUser = async (
   userId: User['userId'],

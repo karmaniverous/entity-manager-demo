@@ -1,4 +1,4 @@
-export { createEmail } from './createEmail';
-export { deleteEmail } from './deleteEmail';
-export { readEmail } from './readEmail';
-export { searchEmails, type SearchEmailsParams } from './searchEmails';
+export * from './createEmail';
+export * from './deleteEmail';
+export * from './readEmail';
+export * from './searchEmails';

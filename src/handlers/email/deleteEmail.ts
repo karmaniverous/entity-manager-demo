@@ -1,5 +1,5 @@
-import { entityClient } from '../../entityClient';
-import { Email, entityManager } from '../../entityManager';
+import type { Email } from '../../entity-manager/Email';
+import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
 /**
@@ -8,6 +8,8 @@ import { readEmail } from './readEmail';
  * @param email - Email record unique id.
  *
  * @throws Error if email record does not exist.
+ *
+ * @category Email
  */
 export const deleteEmail = async (email: Email['email']): Promise<void> => {
   const entityToken = 'email';
@@ -19,7 +21,7 @@ export const deleteEmail = async (email: Email['email']): Promise<void> => {
   if (!record) throw new Error('Email record does not exist.');
 
   // Generate request.
-  const request = entityManager.getPrimaryKey(entityToken, record);
+  const request = entityClient.entityManager.getPrimaryKey(entityToken, record);
 
   // Delete record from database.
   await entityClient.deleteItem(request);

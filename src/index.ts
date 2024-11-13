@@ -1,2 +1,2 @@
-export type { Email, User } from './entityManager';
+export * from './entity-manager';
 export * from './handlers';

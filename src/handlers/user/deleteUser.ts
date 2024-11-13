@@ -1,5 +1,5 @@
-import { entityClient } from '../../entityClient';
-import { entityManager, User } from '../../entityManager';
+import { entityClient } from '../../entity-manager/entityClient';
+import type { User } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
@@ -8,6 +8,8 @@ import { readUser } from './readUser';
  * @param userId - User record unique id.
  *
  * @throws Error if user record does not exist.
+ *
+ * @category User
  */
 export const deleteUser = async (userId: User['userId']): Promise<void> => {
   const entityToken = 'user';
@@ -19,7 +21,7 @@ export const deleteUser = async (userId: User['userId']): Promise<void> => {
   if (!record) throw new Error('User record does not exist.');
 
   // Generate request.
-  const request = entityManager.getPrimaryKey(entityToken, record);
+  const request = entityClient.entityManager.getPrimaryKey(entityToken, record);
 
   // Delete record from database.
   await entityClient.deleteItem(request);

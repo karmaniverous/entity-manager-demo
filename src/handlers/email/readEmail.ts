@@ -1,5 +1,5 @@
-import { entityClient } from '../../entityClient';
-import { type Email } from '../../entityManager';
+import type { Email } from '../../entity-manager/Email';
+import { entityClient } from '../../entity-manager/entityClient';
 
 /**
  * Read an email record from the database.
@@ -7,6 +7,8 @@ import { type Email } from '../../entityManager';
  * @param email - Email record unique id.
  *
  * @returns Email record or `undefined` if not found.
+ *
+ * @category Email
  */
 export const readEmail = async (
   email: Email['email'],

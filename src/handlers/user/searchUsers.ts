@@ -1,22 +1,52 @@
 import { QueryBuilder } from '@karmaniverous/entity-client-dynamodb';
+import { sort } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
-import { entityClient } from '../../entityClient';
-import { type User } from '../../entityManager';
+import { entityClient } from '../../entity-manager/entityClient';
+import { User } from '../../entity-manager/User';
 
+/**
+ * Parameters for the {@link searchUsers | `searchUsers`} function.
+ *
+ * @category User
+ */
 export interface SearchUsersParams {
+  /** Unique id of related Beneficiary record. */
   beneficiaryId?: User['beneficiaryId'];
+
+  /** Unix ms timestamp of earliest `created` value. */
   createdFrom?: User['created'];
+
+  /** Unix ms timestamp of latest `created` value. */
   createdTo?: User['created'];
+
+  /** First characters of either first or last name. Case, whitespace & diacritic insensitive. */
   name?: string;
+
+  /** Page key map from previous search page. */
   pageKeyMap?: string;
+
+  /** First characters of phone number. Case, whitespace & diacritic insensitive. */
   phone?: User['phone'];
+
+  /** Sort results in descending order if `true`. */
   sortDesc?: boolean;
+
+  /** Sort order of results. Default reflects search params, `created` if none. */
   sortOrder?: 'created' | 'name' | 'updated';
+
+  /** Unix ms timestamp of earliest `updated` value. */
   updatedFrom?: User['updated'];
+
+  /** Unix ms timestamp of latest `updated` value. */
   updatedTo?: User['updated'];
 }
 
+/**
+ * Search for User records in the database.
+ *
+ * @category User
+ */
 export const searchUsers = async (params: SearchUsersParams) => {
   const entityToken = 'user';
 
@@ -148,15 +178,31 @@ export const searchUsers = async (params: SearchUsersParams) => {
       });
   }
 
-  return await queryBuilder.query({
+  // Query database.
+  const result = await queryBuilder.query({
     item: { beneficiaryId },
-    sortOrder: [
-      {
-        property: sortOrder === 'name' ? 'lastNameRangeKey' : sortOrder,
-        desc: sortDesc,
-      },
-    ],
     timestampFrom: createdFrom,
     timestampTo: createdTo,
   });
+
+  // Return empty result if no items found.
+  if (!result.items.length) return result;
+
+  // Extract result keys.
+  const resultKeys = result.items.map((item) =>
+    entityClient.entityManager.getPrimaryKey(entityToken, item),
+  );
+
+  // Enrich result.
+  const enriched = await entityClient.getItems(resultKeys);
+
+  // Sort, integrate & return enriched results.
+  result.items = sort(enriched.items, [
+    {
+      property: sortOrder === 'name' ? 'lastNameRangeKey' : sortOrder,
+      desc: sortDesc,
+    },
+  ]);
+
+  return result;
 };

@@ -1,7 +1,7 @@
 import { EntityClient } from '@karmaniverous/entity-client-dynamodb';
 
+import { errorLogger } from '../util/logger';
 import { entityManager } from './entityManager';
-import { errorLogger } from './logger';
 
 export const entityClient = new EntityClient({
   credentials: {
