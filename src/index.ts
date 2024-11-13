@@ -1,8 +1,2 @@
-export type {
-  Email,
-  EmailEntity,
-  MyEntityMap,
-  User,
-  UserEntity,
-} from './entityManager';
+export type { Email, User } from './entityManager';
 export * from './handlers';

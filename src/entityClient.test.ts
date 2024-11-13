@@ -4,9 +4,9 @@ import {
   setupDynamoDbLocal,
   teardownDynamoDbLocal,
 } from '@karmaniverous/dynamodb-local';
+import { generateTableDefinition } from '@karmaniverous/entity-client-dynamodb';
 import { expect } from 'chai';
 
-import { createUserTable } from '../test/dynamoDb';
 import { entityClient } from './entityClient';
 import { env } from './env';
 
@@ -17,11 +17,15 @@ describe('entityClient', function () {
   });
 
   it('creates & deletes user table', async function () {
-    await createUserTable(entityClient);
-    let tables = await entityClient.client.send(new ListTablesCommand());
-    expect(tables.TableNames).to.deep.equal(['user']);
+    await entityClient.createTable({
+      ...generateTableDefinition(entityClient.entityManager),
+      BillingMode: 'PAY_PER_REQUEST',
+    });
 
-    await entityClient.deleteTable({ TableName: 'user' });
+    let tables = await entityClient.client.send(new ListTablesCommand());
+    expect(tables.TableNames).to.deep.equal([entityClient.tableName]);
+
+    await entityClient.deleteTable();
     tables = await entityClient.client.send(new ListTablesCommand());
     expect(tables.TableNames).to.deep.equal([]);
   });

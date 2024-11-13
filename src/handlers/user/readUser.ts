@@ -1,22 +1,22 @@
 import { entityClient } from '../../entityClient';
-import { type Email } from '../../entityManager';
+import { type User } from '../../entityManager';
 
 /**
- * Read an email record from the database.
+ * Read a user record from the database.
  *
- * @param email - Email record unique id.
+ * @param userId - User record unique id.
  *
- * @returns Email record or `undefined` if not found.
+ * @returns User record or `undefined` if not found.
  */
-export const readEmail = async (
-  email: Email['email'],
+export const readUser = async (
+  userId: User['userId'],
   keepKeys = false,
-): Promise<Email | undefined> => {
-  const entityToken = 'email';
+): Promise<User | undefined> => {
+  const entityToken = 'user';
 
   // Conform request params & generate request keys.
   const request = entityClient.entityManager.getPrimaryKey(entityToken, {
-    email: email.toLowerCase(),
+    userId,
   });
 
   // Retrieve record from database.
@@ -28,5 +28,5 @@ export const readEmail = async (
       keepKeys
         ? record
         : entityClient.entityManager.removeKeys(entityToken, record)
-    ) as Email;
+    ) as User;
 };

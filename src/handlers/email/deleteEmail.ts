@@ -5,20 +5,22 @@ import { readEmail } from './readEmail';
 /**
  * Delete an email record from the database.
  *
- * @param email - Unique id of the email record to delete.
+ * @param email - Email record unique id.
  *
  * @throws Error if email record does not exist.
  */
 export const deleteEmail = async (email: Email['email']): Promise<void> => {
-  // Throw error if record already exists.
-  if (!(await readEmail(email)))
-    throw new Error('Email record does not exist.');
+  const entityToken = 'email';
 
-  // Conform request params & generate request keys.
-  const request = entityManager.addKeys('email', {
-    email: email.toLowerCase(),
-  });
+  // Get record from database.
+  const record = await readEmail(email, true);
+
+  // Throw error if record doesn't exist.
+  if (!record) throw new Error('Email record does not exist.');
+
+  // Generate request.
+  const request = entityManager.getPrimaryKey(entityToken, record);
 
   // Delete record from database.
-  await entityClient.deleteItem('UserService', request);
+  await entityClient.deleteItem(request);
 };

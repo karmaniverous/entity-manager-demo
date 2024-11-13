@@ -2,17 +2,19 @@ import { QueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import type { SortOrder } from '@karmaniverous/entity-tools';
 
 import { entityClient } from '../../entityClient';
-import { type Email, entityManager } from '../../entityManager';
+import { type Email } from '../../entityManager';
 
 export interface SearchEmailsParams {
-  createdFrom?: number;
-  createdTo?: number;
+  createdFrom?: Email['created'];
+  createdTo?: Email['created'];
   pageKeyMap?: string;
   sort: SortOrder<Pick<Email, 'created'>>;
-  userId?: string;
+  userId?: Email['userId'];
 }
 
 export const searchEmails = async (params: SearchEmailsParams) => {
+  const entityToken = 'email';
+
   // Extract params.
   const { createdFrom, createdTo, pageKeyMap, sort, userId } = params;
 
@@ -24,10 +26,8 @@ export const searchEmails = async (params: SearchEmailsParams) => {
 
   // Create an email entity query.
   return await new QueryBuilder({
-    tableName: 'UserService',
     entityClient,
-    entityManager,
-    entityToken: 'email',
+    entityToken,
     hashKeyToken,
     pageKeyMap,
   })

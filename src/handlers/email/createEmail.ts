@@ -1,37 +1,43 @@
-import { MakeOptional } from '@karmaniverous/entity-tools';
+import type { MakeOptional } from '@karmaniverous/entity-tools';
 
 import { entityClient } from '../../entityClient';
-import { Email, entityManager } from '../../entityManager';
+import type { Email } from '../../entityManager';
 import { readEmail } from './readEmail';
 
 /**
  * Create an email record in the database.
  *
- * @param record - Email record to create. `created` is optional and will be set to the current time if not provided.
+ * @param params - Ungenerated email record data.
  *
  * @returns Created email record.
  *
  * @throws Error if email record already exists.
  */
 export const createEmail = async (
-  record: MakeOptional<Email, 'created'>,
+  params: MakeOptional<Email, 'created'>,
 ): Promise<Email> => {
-  // Extract record properties.
-  const { created, email, userId } = record;
+  const entityToken = 'email';
+
+  // Extract data properties.
+  const { email, userId, ...rest } = params;
 
   // Throw error if record already exists.
   if (await readEmail(email)) throw new Error('Email record already exists.');
 
-  // Conform request params & generate request keys.
-  const request = entityManager.addKeys('email', {
-    created: created ?? Date.now(),
+  // Create email record.
+  const record: Email = {
+    ...rest,
+    created: Date.now(),
     email: email.toLowerCase(),
     userId,
-  }) as Email;
+  };
+
+  // Generate request.
+  const request = entityClient.entityManager.addKeys(entityToken, record);
 
   // Create record in database.
-  await entityClient.putItem('UserService', request);
+  await entityClient.putItem(request);
 
   // Return created record.
-  return request;
+  return record;
 };
