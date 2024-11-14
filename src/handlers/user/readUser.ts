@@ -16,15 +16,15 @@ export const readUser = async (
 ): Promise<User | undefined> => {
   const entityToken = 'user';
 
-  // Conform request params & generate request keys.
-  const request = entityClient.entityManager.getPrimaryKey(entityToken, {
+  // Generate record key.
+  const key = entityClient.entityManager.getPrimaryKey(entityToken, {
     userId,
   });
 
   // Retrieve record from database.
-  const { Item: record } = await entityClient.getItem(request);
+  const { Item: record } = await entityClient.getItem(key);
 
-  // Remove keys from record, type, and return.
+  // Optionally extract item from record & return.
   if (record)
     return (
       keepKeys

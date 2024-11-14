@@ -8,7 +8,7 @@ import type { User } from '../../entity-manager/User';
 /**
  * Create an user record in the database.
  *
- * @param params - Ungenerated user record data.
+ * @param data - User record data. Generated properties will be overwritten.
  *
  * @returns Created user record.
  *
@@ -17,7 +17,7 @@ import type { User } from '../../entity-manager/User';
  * @category User
  */
 export const createUser = async (
-  params: MakeOptional<
+  data: MakeOptional<
     User,
     | 'created'
     | 'firstNameCanonical'
@@ -29,11 +29,11 @@ export const createUser = async (
   const entityToken = 'user';
 
   // Extract data properties.
-  const { firstName, lastName, ...rest } = params;
+  const { firstName, lastName, ...rest } = data;
 
-  // Create user record.
+  // Create new item.
   const now = Date.now();
-  const record: User = {
+  const item: User = {
     ...rest,
     created: now,
     firstName,
@@ -44,12 +44,12 @@ export const createUser = async (
     userId: nanoid(),
   };
 
-  // Generate request.
-  const request = entityClient.entityManager.addKeys(entityToken, record);
+  // Generate record from item.
+  const record = entityClient.entityManager.addKeys(entityToken, item);
 
   // Create record in database.
-  await entityClient.putItem(request);
+  await entityClient.putItem(record);
 
-  // Return created record.
-  return record;
+  // Return new item.
+  return item;
 };

@@ -7,7 +7,7 @@ import { readEmail } from './readEmail';
 /**
  * Create an email record in the database.
  *
- * @param params - Ungenerated email record data.
+ * @param data - Email record data. Generated properties will be overwritten.
  *
  * @returns Created email record.
  *
@@ -16,30 +16,30 @@ import { readEmail } from './readEmail';
  * @category Email
  */
 export const createEmail = async (
-  params: MakeOptional<Email, 'created'>,
+  data: MakeOptional<Email, 'created'>,
 ): Promise<Email> => {
   const entityToken = 'email';
 
   // Extract data properties.
-  const { email, userId, ...rest } = params;
+  const { email, userId, ...rest } = data;
 
   // Throw error if record already exists.
   if (await readEmail(email)) throw new Error('Email record already exists.');
 
-  // Create email record.
-  const record: Email = {
+  // Create new item.
+  const item: Email = {
     ...rest,
     created: Date.now(),
     email: email.toLowerCase(),
     userId,
   };
 
-  // Generate request.
-  const request = entityClient.entityManager.addKeys(entityToken, record);
+  // Generate record from item.
+  const record = entityClient.entityManager.addKeys(entityToken, item);
 
   // Create record in database.
-  await entityClient.putItem(request);
+  await entityClient.putItem(record);
 
-  // Return created record.
-  return record;
+  // Return new item.
+  return item;
 };

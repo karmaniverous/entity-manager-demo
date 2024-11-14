@@ -66,20 +66,27 @@ export const searchEmails = async (params: SearchEmailsParams) => {
   if (!result.items.length) return result;
 
   // Extract result keys.
-  const resultKeys = result.items.map((item) =>
-    entityClient.entityManager.getPrimaryKey(entityToken, item),
+  const keys = entityClient.entityManager.getPrimaryKey(
+    entityToken,
+    result.items,
   );
 
-  // Enrich result.
-  const enriched = await entityClient.getItems(resultKeys);
+  // Enrich result items.
+  const { items } = await entityClient.getItems(keys);
 
-  // Sort, integrate & return enriched results.
-  result.items = sort(enriched.items, [
+  // Sort enriched items.
+  const sortedItems = sort(items, [
     {
       property: 'created',
       desc: sortDesc,
     },
   ]);
+
+  // Remove keys & re-integrate with result.
+  result.items = entityClient.entityManager.removeKeys(
+    entityToken,
+    sortedItems,
+  );
 
   return result;
 };

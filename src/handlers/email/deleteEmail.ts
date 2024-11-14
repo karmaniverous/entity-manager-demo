@@ -20,9 +20,9 @@ export const deleteEmail = async (email: Email['email']): Promise<void> => {
   // Throw error if record doesn't exist.
   if (!record) throw new Error('Email record does not exist.');
 
-  // Generate request.
-  const request = entityClient.entityManager.getPrimaryKey(entityToken, record);
+  // Get key from record.
+  const key = entityClient.entityManager.getPrimaryKey(entityToken, record);
 
   // Delete record from database.
-  await entityClient.deleteItem(request);
+  await entityClient.deleteItem(key);
 };
