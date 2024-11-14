@@ -9,6 +9,7 @@
       "DefaultTranscodeMap": "https://docs.karmanivero.us/entity-tools/interfaces/entity_tools.DefaultTranscodeMap.html",
       "Entity": "https://docs.karmanivero.us/entity-tools/types/entity_tools.Entity.html",
       "MakeOptional": "https://docs.karmanivero.us/entity-tools/types/entity_tools.MakeOptional.html",
+      "MakeUpdatable": "https://docs.karmanivero.us/entity-tools/types/entity_tools.MakeUpdatable.html",
       "SortOrder": "https://docs.karmanivero.us/entity-tools/types/entity_tools.SortOrder.html"
     }
   },
