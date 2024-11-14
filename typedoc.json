@@ -25,6 +25,7 @@
     "tsx",
     "typescript"
   ],
+  "hostedBaseUrl": "https://docs.karmanivero.us/entity-manager-demo",
   "navigation": {
     "includeCategories": true
   },
