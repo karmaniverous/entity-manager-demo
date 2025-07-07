@@ -6,9 +6,17 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { User } from '../../entity-manager/User';
 
 /**
- * Create an user record in the database.
+ * `createUser` params.
+ */
+export type CreateUserParams = MakeOptional<
+  User,
+  'created' | 'firstNameCanonical' | 'lastNameCanonical' | 'updated' | 'userId'
+>;
+
+/**
+ * Create a user record in the database.
  *
- * @param data - User record data. Generated properties will be overwritten.
+ * @param params - User record params. Generated properties will be overwritten.
  *
  * @returns Created user record.
  *
@@ -16,20 +24,11 @@ import type { User } from '../../entity-manager/User';
  *
  * @category User
  */
-export const createUser = async (
-  data: MakeOptional<
-    User,
-    | 'created'
-    | 'firstNameCanonical'
-    | 'lastNameCanonical'
-    | 'updated'
-    | 'userId'
-  >,
-): Promise<User> => {
+export const createUser = async (params: CreateUserParams): Promise<User> => {
   const entityToken = 'user';
 
-  // Extract data properties.
-  const { firstName, lastName, ...rest } = data;
+  // Extract params.
+  const { firstName, lastName, ...rest } = params;
 
   // Create new item.
   const now = Date.now();

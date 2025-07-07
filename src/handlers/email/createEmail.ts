@@ -5,9 +5,14 @@ import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
 /**
+ * `createEmail` params.
+ */
+export type CreateEmailParams = MakeOptional<Email, 'created'>;
+
+/**
  * Create an email record in the database.
  *
- * @param data - Email record data. Generated properties will be overwritten.
+ * @param params - Email record data. Generated properties will be overwritten.
  *
  * @returns Created email record.
  *
@@ -16,12 +21,12 @@ import { readEmail } from './readEmail';
  * @category Email
  */
 export const createEmail = async (
-  data: MakeOptional<Email, 'created'>,
+  params: CreateEmailParams,
 ): Promise<Email> => {
   const entityToken = 'email';
 
-  // Extract data properties.
-  const { email, userId, ...rest } = data;
+  // Extract params.
+  const { email, userId, ...rest } = params;
 
   // Throw error if record already exists.
   if (await readEmail(email)) throw new Error('Email record already exists.');

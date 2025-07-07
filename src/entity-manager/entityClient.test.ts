@@ -12,8 +12,14 @@ import { entityClient } from './entityClient';
 
 describe('entityClient', function () {
   before(async function () {
+    // Set up DynamoDB Local.
     await setupDynamoDbLocal(env.dynamoDbLocalPort);
     await dynamoDbLocalReady(entityClient.client);
+  });
+
+  after(async function () {
+    // Tear down DynamoDB Local.
+    await teardownDynamoDbLocal();
   });
 
   it('creates & deletes user table', async function () {
@@ -28,9 +34,5 @@ describe('entityClient', function () {
     await entityClient.deleteTable();
     tables = await entityClient.client.send(new ListTablesCommand());
     expect(tables.TableNames).to.deep.equal([]);
-  });
-
-  after(async function () {
-    await teardownDynamoDbLocal();
   });
 });
