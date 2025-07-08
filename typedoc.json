@@ -3,7 +3,7 @@
   "externalSymbolLinkMappings": {
     "@karmaniverous/entity-manager": {
       "EntityManager": "https://docs.karmanivero.us/entity-manager/classes/entity_manager.EntityManager.html",
-      "QueryResult": "https://docs.karmanivero.us/entity-tools/types/entity_tools.QueryResult.html"
+      "QueryResult": "https://docs.karmanivero.us/entity-manager/interfaces/index.QueryResult.html"
     },
     "@karmaniverous/entity-tools": {
       "DefaultTranscodeMap": "https://docs.karmanivero.us/entity-tools/interfaces/entity_tools.DefaultTranscodeMap.html",

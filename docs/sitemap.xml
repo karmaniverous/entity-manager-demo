@@ -2,86 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/modules.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/index.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/documents/CHANGELOG.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/modules/index.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/interfaces/index.Beneficiary.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/interfaces/index.Email.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/interfaces/index.SearchEmailsParams.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/interfaces/index.SearchUsersParams.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/interfaces/index.User.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/types/index.CreateEmailParams.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/types/index.CreateUserParams.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/variables/index.entityClient.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.createEmail.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.createUser.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.deleteEmail.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.deleteUser.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.readEmail.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.readUser.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.searchEmails.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.searchUsers.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 	<url>
 		<loc>https://docs.karmanivero.us/entity-manager-demo/functions/index.updateUser.html</loc>
-		<lastmod>2025-07-07T10:29:20.737Z</lastmod>
+		<lastmod>2025-07-08T09:30:36.011Z</lastmod>
 	</url>
 </urlset>
