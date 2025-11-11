@@ -4,7 +4,6 @@ import {
   teardownDynamoDbLocal,
 } from '@karmaniverous/dynamodb-local';
 import { generateTableDefinition } from '@karmaniverous/entity-client-dynamodb';
-import { expect } from 'chai';
 
 import { type Beneficiary, entityClient } from '../entity-manager';
 import { env } from '../env';
@@ -21,7 +20,7 @@ describe('handlers', function () {
   let beneficiaries: Beneficiary[];
   let createUserParams: CreateUserParams[];
 
-  before(async function () {
+  beforeAll(async function () {
     // Set up DynamoDB Local.
     await setupDynamoDbLocal(env.dynamoDbLocalPort);
     await dynamoDbLocalReady(entityClient.client);
@@ -37,7 +36,7 @@ describe('handlers', function () {
     createUserParams = generateUsers({ beneficiaries, count: 100 });
   });
 
-  after(async function () {
+  afterAll(async function () {
     // Tear down DynamoDB Local.
     await teardownDynamoDbLocal();
   });

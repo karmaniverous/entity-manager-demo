@@ -5,19 +5,18 @@ import {
   teardownDynamoDbLocal,
 } from '@karmaniverous/dynamodb-local';
 import { generateTableDefinition } from '@karmaniverous/entity-client-dynamodb';
-import { expect } from 'chai';
 
 import { env } from '../env';
 import { entityClient } from './entityClient';
 
 describe('entityClient', function () {
-  before(async function () {
+  beforeAll(async function () {
     // Set up DynamoDB Local.
     await setupDynamoDbLocal(env.dynamoDbLocalPort);
     await dynamoDbLocalReady(entityClient.client);
   });
 
-  after(async function () {
+  afterAll(async function () {
     // Tear down DynamoDB Local.
     await teardownDynamoDbLocal();
   });
