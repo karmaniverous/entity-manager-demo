@@ -7,6 +7,9 @@
 
 ## Completed (recent)
 
+- Tests: fix handlers CRUD assertions
+  - Use updated[0] for deep include on array result from updateUser.
+  - Expect empty array from readUser after delete (not undefined).
 - Fix ESLint/TypeScript/Typedoc failures
   - Added devDependency eslint-plugin-prettier to satisfy flat-config import in
     eslint.config.ts and unblock lint/typedoc/knip.

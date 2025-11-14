@@ -60,7 +60,7 @@ describe('handlers', function () {
         ...createUserParams[2],
       });
 
-      expect(updated).to.deep.include(createUserParams[2]);
+      expect(updated[0]).to.deep.include(createUserParams[2]);
 
       // Read updated user record.
       const readUpdated = await readUser(updated[0].userId);
@@ -71,7 +71,7 @@ describe('handlers', function () {
 
       // Read deleted user record.
       const readDeleted = await readUser(updated[0].userId);
-      expect(readDeleted).to.be.undefined;
+      expect(readDeleted).to.be.empty;
     });
   });
 });
