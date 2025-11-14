@@ -51,26 +51,26 @@ describe('handlers', function () {
       // Read user record.
       const read = await readUser(created.userId);
 
-      expect(read).to.deep.equal(created);
-      if (!read) return;
+      expect(read[0]).to.deep.equal(created);
+      if (!read.length) return;
 
       // Update user record.
       const updated = await updateUser({
-        userId: read.userId,
+        userId: read[0].userId,
         ...createUserParams[2],
       });
 
       expect(updated).to.deep.include(createUserParams[2]);
 
       // Read updated user record.
-      const readUpdated = await readUser(updated.userId);
+      const readUpdated = await readUser(updated[0].userId);
       expect(readUpdated).to.deep.equal(updated);
 
       // Delete user record.
-      await deleteUser(updated.userId);
+      await deleteUser(updated[0].userId);
 
       // Read deleted user record.
-      const readDeleted = await readUser(updated.userId);
+      const readDeleted = await readUser(updated[0].userId);
       expect(readDeleted).to.be.undefined;
     });
   });

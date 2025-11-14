@@ -3,11 +3,11 @@ import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
 /**
- * Delete an email record from the database.
+ * Delete email records from the database based on unique email.
  *
  * @param email - Email record unique id.
  *
- * @throws Error if email record does not exist.
+ * @throws Error if email records do not exist.
  *
  * @category Email
  */
@@ -15,14 +15,14 @@ export const deleteEmail = async (email: Email['email']): Promise<void> => {
   const entityToken = 'email';
 
   // Get record from database.
-  const record = await readEmail(email, true);
+  const items = await readEmail(email, true);
 
-  // Throw error if record doesn't exist.
-  if (!record) throw new Error('Email record does not exist.');
+  // Throw error if records don't exist.
+  if (!items.length) throw new Error('Email records do not exist.');
 
   // Get key from record.
-  const key = entityClient.entityManager.getPrimaryKey(entityToken, record);
+  const keys = entityClient.entityManager.getPrimaryKey(entityToken, items);
 
   // Delete record from database.
-  await entityClient.deleteItem(key);
+  await entityClient.deleteItems(keys);
 };

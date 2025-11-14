@@ -3,26 +3,26 @@ import type { User } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
- * Delete a user record from the database.
+ * Delete user records from the database based on unique userId.
  *
  * @param userId - User record unique id.
  *
- * @throws Error if user record does not exist.
+ * @throws Error if user records do not exist.
  *
  * @category User
  */
 export const deleteUser = async (userId: User['userId']): Promise<void> => {
   const entityToken = 'user';
 
-  // Get record from database.
-  const record = await readUser(userId, true);
+  // Get records from database.
+  const items = await readUser(userId, true);
 
-  // Throw error if record doesn't exist.
-  if (!record) throw new Error('User record does not exist.');
+  // Throw error if records don't exist.
+  if (!items.length) throw new Error('User records do not exist.');
 
   // Get key from record.
-  const key = entityClient.entityManager.getPrimaryKey(entityToken, record);
+  const keys = entityClient.entityManager.getPrimaryKey(entityToken, items);
 
   // Delete record from database.
-  await entityClient.deleteItem(key);
+  await entityClient.deleteItems(keys);
 };

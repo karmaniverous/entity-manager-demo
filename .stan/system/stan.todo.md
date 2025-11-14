@@ -19,3 +19,13 @@
     assertions.
   - Removed unused Mocha-era devDependencies (chai, eslint-plugin-mocha,
     jsdom-global, source-map-support).
+
+- Stabilize lint/typecheck for eslint.config.ts
+  - Added ambient module declaration types/eslint-plugin-prettier.d.ts so
+    TypeScript can typecheck the flat config without extra tsconfigs.
+  - Included the new types/\*_/_.d.ts path in tsconfig.json "include".
+
+- Eliminate Docker port conflict across suites
+  - Configured Vitest single-worker execution (threads.singleThread = true) to
+    prevent concurrent container startups on port 8000.
+

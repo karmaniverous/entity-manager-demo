@@ -6,44 +6,49 @@ import type { User } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
- * Update a user record in the database.
+ * Update user records in the database based on unique userId.
  *
  * @param data - User update data. Only `userId` is required. Generated properties will be overwritten. `null` optional properties will be deleted.
  *
- * @throws Error if user record does not exist.
+ * @throws Error if user records do not exist.
  *
  * @category User
  */
 export const updateUser = async (
   data: MakeUpdatable<User, 'userId'>,
-): Promise<User> => {
+): Promise<User[]> => {
   const entityToken = 'user';
 
   // Extract properties.
   const { firstName, lastName, userId, ...rest } = data;
 
-  // Get item from database.
-  let item = await readUser(userId);
+  // Get records from database.
+  const items = await readUser(userId);
 
-  // Throw error if item doesn't exist.
-  if (!item) throw new Error('User does not exist.');
+  // Throw error if records don't exist.
+  if (!items.length) throw new Error('User records do not exist.');
 
-  // Update item.
-  item = updateRecord(item, {
-    firstName,
-    firstNameCanonical: normstr(firstName),
-    lastName,
-    lastNameCanonical: normstr(lastName),
-    updated: Date.now(),
-    ...rest,
-  });
+  // Update items.
+  const updatedItems = items.map((item) =>
+    updateRecord(item, {
+      firstName,
+      firstNameCanonical: normstr(firstName),
+      lastName,
+      lastNameCanonical: normstr(lastName),
+      updated: Date.now(),
+      ...rest,
+    }),
+  );
 
-  // Generate record from updated item.
-  const record = entityClient.entityManager.addKeys(entityToken, item);
+  // Add keys to updated items.
+  const updatedRecords = entityClient.entityManager.addKeys(
+    entityToken,
+    updatedItems,
+  );
 
   // Update record in database.
-  await entityClient.putItem(record);
+  await entityClient.putItems(updatedRecords);
 
   // Return updated item.
-  return item;
+  return updatedItems;
 };

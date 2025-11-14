@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 
 import { entityClient } from '../../entity-manager/entityClient';
 import type { User } from '../../entity-manager/User';
+import { readUser } from './readUser';
 
 /**
  * `createUser` params.
@@ -28,7 +29,11 @@ export const createUser = async (params: CreateUserParams): Promise<User> => {
   const entityToken = 'user';
 
   // Extract params.
-  const { firstName, lastName, ...rest } = params;
+  const { firstName, lastName, userId, ...rest } = params;
+
+  // Throw error if record already exists.
+  if (userId && (await readUser(userId)).length)
+    throw new Error('Email record already exists.');
 
   // Create new item.
   const now = Date.now();
@@ -36,11 +41,11 @@ export const createUser = async (params: CreateUserParams): Promise<User> => {
     ...rest,
     created: now,
     firstName,
-    firstNameCanonical: normstr(firstName)!,
+    firstNameCanonical: normstr(firstName) ?? '',
     lastName,
-    lastNameCanonical: normstr(lastName)!,
+    lastNameCanonical: normstr(lastName) ?? '',
     updated: now,
-    userId: nanoid(),
+    userId: userId ?? nanoid(),
   };
 
   // Generate record from item.

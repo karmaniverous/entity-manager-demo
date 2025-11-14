@@ -2,33 +2,30 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { User } from '../../entity-manager/User';
 
 /**
- * Read a user record from the database.
+ * Read user records from the database based on unique userId.
  *
  * @param userId - User record unique id.
  *
- * @returns User record or `undefined` if not found.
+ * @returns User record array, empty if not found.
  *
  * @category User
  */
 export const readUser = async (
   userId: User['userId'],
   keepKeys = false,
-): Promise<User | undefined> => {
+): Promise<User[]> => {
   const entityToken = 'user';
 
-  // Generate record key.
-  const key = entityClient.entityManager.getPrimaryKey(entityToken, {
+  // Generate record keys.
+  const keys = entityClient.entityManager.getPrimaryKey(entityToken, {
     userId,
   });
 
-  // Retrieve record from database.
-  const { Item: record } = await entityClient.getItem(key);
+  // Retrieve records from database.
+  const { items } = await entityClient.getItems(keys);
 
-  // Optionally extract item from record & return.
-  if (record)
-    return (
-      keepKeys
-        ? record
-        : entityClient.entityManager.removeKeys(entityToken, record)
-    ) as User;
+  // Optionally remove keys from records & return.
+  return (
+    keepKeys ? items : entityClient.entityManager.removeKeys(entityToken, items)
+  ) as User[];
 };

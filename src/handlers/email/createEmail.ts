@@ -28,14 +28,19 @@ export const createEmail = async (
   // Extract params.
   const { email, userId, ...rest } = params;
 
+  // Normalized params.
+  const normalizedEmail = email.toLowerCase();
+
   // Throw error if record already exists.
-  if (await readEmail(email)) throw new Error('Email record already exists.');
+  if ((await readEmail(normalizedEmail)).length)
+    throw new Error('Email record already exists.');
 
   // Create new item.
+  const now = Date.now();
   const item: Email = {
     ...rest,
-    created: Date.now(),
-    email: email.toLowerCase(),
+    created: now,
+    email: normalizedEmail,
     userId,
   };
 
