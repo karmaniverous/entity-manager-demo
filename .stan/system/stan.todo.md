@@ -7,6 +7,16 @@
 
 ## Completed (recent)
 
+- Interop: propose token-aware types/overloads upstream in entity-manager
+  - Added interop note at .stan/interop/entity-manager/token-aware-types-and-overloads.md
+    specifying helper types (EntityItemByToken/EntityRecordByToken), overloads
+    for removeKeys/addKeys/getPrimaryKey, scope (entity-manager only), and
+    compatibility.
+  - Included a concrete tsd-based test plan to validate inference (narrowed
+    return types by token, fallback to union for dynamic tokens) and optional
+    query typing extension.
+  - This enables removing consumer-side casts like `as User[]` in this repo
+    without changing runtime behavior.
 - Tests: fix handlers CRUD assertions
   - Use updated[0] for deep include on array result from updateUser.
   - Expect empty array from readUser after delete (not undefined).
