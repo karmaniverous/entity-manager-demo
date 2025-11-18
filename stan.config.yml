@@ -5,16 +5,21 @@ stan-core:
     - docs
     - package-lock.json
   imports:
+    entity-client-dynamodb:
+      - ../entity-client-dynamodb/.stan/system/stan.requirements.md
+      - ../entity-client-dynamodb/.stan/system/stan.todo.md
+      - ../entity-client-dynamodb/dist/index.d.ts
+      - ../entity-client-dynamodb/.stan/interop/entity-manager-demo/**
     entity-manager:
       - ../entity-manager/.stan/system/stan.requirements.md
       - ../entity-manager/.stan/system/stan.todo.md
       - ../entity-manager/dist/index.d.ts
-      - ../entity-manager/.stan/interop/entity-client-dynamodb/**
+      - ../entity-manager/.stan/interop/entity-manager-demo/**
     entity-tools:
       - ../entity-tools/.stan/system/stan.requirements.md
       - ../entity-tools/.stan/system/stan.todo.md
       - ../entity-tools/dist/index.d.ts
-      - ../entity-tools/.stan/interop/entity-client-dynamodb/**
+      - ../entity-tools/.stan/interop/entity-manager-demo/**
     karmanivero.us:
       - ../karmanivero.us/collections/_entity-manager/00-intro.md
       - ../karmanivero.us/collections/_entity-manager/01-sql-vs-nosql.md
@@ -30,7 +35,9 @@ stan-cli:
   patchOpenCommand: code -g {file}
   scripts:
     typecheck: npm run typecheck
-    lint: npm run lint:fix
+    lint:
+      script: npm run lint:fix
+      warnPattern: \\d+:\\d+\\s+warning
     test: npm run test -- --no-color
     docs:
       script: npm run docs -- --emit none
