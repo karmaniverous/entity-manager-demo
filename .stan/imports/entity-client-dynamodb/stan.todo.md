@@ -2,10 +2,85 @@
 
 ## Next up
 
-- Consider adding a lightweight docker-availability helper for reuse across
+- TSD: pin removeKeys literal overloads and tuple projections (token-aware)
+  - getItems('token', keys, { removeKeys: true }) → items: EntityItemByToken<…, 'token'>[].
+  - getItems('token', keys, { removeKeys: false }) → items: EntityRecordByToken<…, 'token'>[].
+  - getItems('token', keys, attrs as const, { removeKeys: true }) → items: Projected<EntityItemByToken<…, 'token'>, typeof attrs>[].
+  - getItems('token', keys, attrs as const, { removeKeys: false }) → items: Projected<EntityRecordByToken<…, 'token'>, typeof attrs>[].
+  - Non‑literal flag (const flag: boolean): union persists (assert with expectType).
+  - Token-less overloads: unchanged (broad EntityRecord<…> items).
+
+- QueryBuilder ergonomics: implement helper methods
+  - setScanIndexForward(indexToken: ITS, value: boolean): this
+    • Runtime: set IndexParams.scanIndexForward; emitted by getDocumentQueryArgs.
+    • Typing: no change to K.
+  - resetProjection(indexToken: ITS): QueryBuilder<…, unknown>
+    • Runtime: delete per‑index projectionAttributes; full item shape for that index.
+    • Typing: widen K → unknown (merged results are no longer uniformly projected).
+  - resetAllProjections(): QueryBuilder<…, unknown>
+    • Runtime: delete projectionAttributes for all indices; full items.
+    • Typing: widen K → unknown.
+  - setProjectionAll<KAttr extends readonly string[]>(indices: ITS[] | readonly ITS[], attrs: KAttr): QueryBuilder<…, KAttr>
+    • Runtime: set a uniform ProjectionExpression for supplied indices (or all indices if we choose to add an “apply to all current indices” variant).
+    • Typing: narrow builder K to KAttr (uniform projected result shape).
+  - Unit tests:
+    • Assert scanIndexForward is emitted in QueryCommandInput by getDocumentQueryArgs.
+    • Verify ProjectionExpression emission remains intact when using setProjectionAll.
+  - Docs (API/README):
+    • Document runtime policy (auto‑include uniqueProperty and explicit sort keys when projections are supplied).
+    • Clarify K behavior on setProjectionAll (narrows) vs resets (widens).
+
+- README examples (after helpers implemented)
+  - Provide a focused example showing:
+    • setProjectionAll([...], ['created'] as const) → typed narrowing of QueryResult.items.
+    • setScanIndexForward('created', false) for reverse chronological results.
+    • resetProjection / resetAllProjections and effect on result typing.
+
+- TSD: QueryBuilder projection K chain
+  - setProjection('created', ['created'] as const) returns builder with K=['created'].
+  - query(...) returns QueryResult items: Pick<EntityItemByToken<…, ET>, 'created'>[].
+  - resetProjection('created') / resetAllProjections() returns builder with K=unknown; query returns full shape.
+  - setProjectionAll([...], ['a','b'] as const) returns builder with K=['a','b']; query narrows accordingly.
+
+- Internals/variance (deferred; requires upstream)
+  - Requirements update (done): Document the need for variance-friendly helper acceptance in entity‑manager (structural or generic builder).
+  - Interop request: file .stan/interop/entity-manager/basequerybuilder-variance-and-helper-acceptance.md with:
+    • Problem: helper parameter typing forces downstream casts for extended builder generics.
+    • Proposal: generic builder acceptance or minimal structural interface for helper params (indexParamsMap + logger).
+    • No runtime changes; backward-compatible typing.
+    • Acceptance criteria: compile-clean upstream and enables removal of “unknown as …” casts downstream.
+  - Adapter follow-up (after upstream merges):
+    • Remove variance-bridging casts in this repo’s QueryBuilder when calling addFilterCondition/addRangeKeyCondition.
+    • Keep tests and tsd coverage intact.
+
+- Tiny docs polish
+  - Add API docs notes on:
+    • Helper method behavior (runtime vs K typing).
+    • Projection policy (auto-include uniqueProperty and explicit sort keys with projections).
+  - Cross-link the README and TypeDoc sections where appropriate.
+
+- Pin new DX typing with tsd tests
+  - EntityClient.getItem/getItems:
+    • removeKeys literal true/false → narrow to Item/Record variants.
+    • attributes as const tuple → Pick<…> projection narrowing (with token).
+    • combined cases (tuple + removeKeys literal).
+  - QueryBuilder/EntityManager query typing:
+    • createQueryBuilder({ cf }) → ITS derived from cf; PageKeyByIndex typed
+    by index; ShardQueryFunction pageKey param narrowing.
+    • Negative cases for invalid index keys and wrong page-key shapes.
+
+- Document adapter ProjectionExpression policy
+  - When a projection is supplied, auto-include uniqueProperty and any sort
+    keys to preserve dedupe/sort invariants at runtime. Add a concise note to
+    README/Typedoc and, where feasible, a focused test asserting invariants.
+
+- Expand tsd coverage for public types
+  - TranscodeAttributeTypeMap usage and QueryBuilder public types
+    (index params, addFilterCondition/addRangeKeyCondition inputs).
+
+- Optional DX: add a lightweight docker-availability helper for reuse across
   integration tests (shared test util).
-- Expand tsd coverage for exported types (TranscodeAttributeTypeMap usage and
-  QueryBuilder public types).
+
 - Add batch write unprocessed requeue tests. (Planned)
 
 ## Completed (recent)
@@ -112,3 +187,107 @@
 - DX: finalize getItems overload compatibility
   - Widened implementation signature return to Promise<any> to satisfy TS2394
     while preserving strongly typed overloads for call sites.
+
+- Interop: added projection‑aware typed query results note for entity-manager at .stan/interop/entity-manager/projection-aware-typed-query-results.md (type-only K channel through QueryOptions/Result/SQF; no runtime changes)
+
+- DX: removeKeys literal overloads (token-aware)
+  - Added overloads to EntityClient.getItem/getItems that narrow return types
+    when options.removeKeys is a literal true/false. No runtime changes.
+  - Added tuple-aware overloads for token-aware calls with attributes declared
+    as const tuples; results narrow to Pick<…> over those keys, combined with
+    removeKeys literal when provided.
+
+- QueryBuilder typing (CF-aware, optional)
+  - Tightened addRangeKeyCondition param types: indexToken accepts ITS, and
+    when a config literal (CF) is supplied, the condition.property narrows to
+    the index’s rangeKey; otherwise remains string. No runtime changes.
+
+- Fix: QueryBuilder addRangeKeyCondition overloads
+  - Added CF-aware overload while keeping implementation signature as RangeKeyCondition to satisfy TS union assignability and avoid TS2345 during build/docs.
+
+- Fix: QueryBuilder overload compatibility (TS2394)
+  - Removed extra generic from CF-aware overload and used IndexRangeKeyOf<CF, ITS> directly; dropped unused HasIndexFor import. Implementation remains (ITS, RangeKeyCondition). No runtime changes.
+
+- Fix: QueryBuilder CF-aware overload fallback
+  - Ensured CF-aware property type falls back to string when no literal can be
+    resolved (avoids ‘never’ and keeps overload compatible with implementation).
+
+- Amendment: Retained CF-aware property narrowing without overloads
+  - Replaced the overloadimplementation pair with a single CF-aware method
+    signature for addRangeKeyCondition that narrows `condition.property` via
+    IndexRangeKeyOf<CF, ITS>. This resolves TS2394 while preserving CF-aware
+    DX. No runtime changes; Typedoc/rollup/tsc remain compatible.
+
+- Amendment: CF-aware property fallback guard (no runtime change)
+  - Updated addRangeKeyCondition signature to use an IfNever-style conditional
+    for `property`, so when CF is absent the type falls back to `string`.
+  - Preserves CF-aware narrowing when CF is provided; restores typecheck/build/
+    docs by avoiding `never` at call sites.
+
+- QueryBuilder: thread K (projection) and add setProjection
+  - Added K generic to QueryBuilder extending BaseQueryBuilder<…, CF, K>.
+  - Implemented setProjection(indexToken, attributes) to set per-index
+    projections; method narrows K for callers passing const tuples.
+  - Overrode query() to auto-include uniqueProperty and any explicit sort keys
+    when projections are present, preserving dedupe/sort invariants.
+  - getDocumentQueryArgs now emits ProjectionExpression and augments
+    ExpressionAttributeNames when projections are set.
+
+- Tests: projection and CF-aware narrowing
+  - Added tsd test (test/types/querybuilder-range-key.test-d.ts) pinning
+    CF-aware range-key property narrowing and fallback to string without CF.
+  - Added unit test for ProjectionExpression emission in
+    getDocumentQueryArgs.test.ts.
+
+- Docs: export Projected and fix TypeDoc warnings
+  - Exported Projected type from EntityClient and re-exported at package root;
+    updated README to document projection policy and Projected helper.
+  - Added replace-text rules in typedoc.json to fix smithy symbol links.
+
+- Helper typing (variance): relaxed addRangeKeyCondition/addFilterCondition
+  to accept a generic BaseQueryBuilder plus minimal structural contract
+  (indexParamsMap + logger). Removed variance-bridging casts at call sites in
+  QueryBuilder; no runtime behavior changes.
+
+- QueryBuilder ergonomics: added setScanIndexForward, resetProjection,
+  resetAllProjections, and setProjectionAll. Added unit tests covering scan
+  direction and projection lifecycle; extended getDocumentQueryArgs tests to
+  assert ScanIndexForward=false emission.
+
+- Amendment: Fixed discriminant narrowing in addFilterCondition, switched to
+  helper aliases in QueryBuilder, and completed ergonomics method surface.
+
+- Lint: resolved no-unnecessary-condition in QueryBuilder resets by guarding
+  params presence in resetProjection and removing optional chaining in
+  resetAllProjections (keys are known from Object.keys()).
+
+- Docs & TSD:
+  - README: added “Projections and scan direction” section showing
+    setProjectionAll, setScanIndexForward, and resets with K-channel notes.
+  - TSD: added querybuilder-projection-k.test-d.ts to pin K narrowing/widening.
+
+- TSD & Lint scope:
+  - Moved tsd tests to test-d/ and updated typecheck to run "tsc && tsd".
+  - Scoped @typescript-eslint/no-unused-expressions off only for \*_/_.test.ts
+    (vitest tests), leaving the rule active for source files.
+  - Updated knip.json to ignore test-d/\*\* to keep knip clean for
+    compile-time-only tests.
+
+- TSD: pinned removeKeys literal typing for getItem/getItems (with and without
+  tuple projections) under test-d/entityclient-removekeys.test-d.ts.
+- README: added typed removeKeys examples and a CF note on per-index page-key
+  typing when CF is supplied.
+
+- TSD: added non-literal removeKeys flag assertions to ensure union typing
+  persists for token-aware getItems/getItem when the flag is boolean, matching
+  documented DX (test-d/entityclient-removekeys.test-d.ts).
+
+- Fix: Reordered token-aware getItems overloads so the literal removeKeys
+  signatures appear before the broad union signature, restoring intended
+  narrowing for removeKeys: true/false in tsd tests.
+
+- Fix (types): Replaced token-aware, no-attributes union overloads for
+  getItem/getItems with single conditional-generic signatures keyed to
+  options.removeKeys. This removes reliance on overload order in generated
+  .d.ts and guarantees narrowing for literal true/false while preserving union
+  when removeKeys is non-literal.

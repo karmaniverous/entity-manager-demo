@@ -256,6 +256,18 @@ type EntityOfToken<CC extends BaseConfigMap, ET extends EntityToken<CC>> = Exact
 type EntityItemByToken<CC extends BaseConfigMap, ET extends EntityToken<CC>> = Partial<EntityOfToken<CC, ET> & Record<CC['HashKey'] | CC['RangeKey'] | CC['ShardedKeys'] | CC['UnshardedKeys'], string>> & Record<string, unknown>;
 /** EntityRecordByToken — database-facing record (keys required) narrowed to a specific entity token. */
 type EntityRecordByToken<CC extends BaseConfigMap, ET extends EntityToken<CC>> = EntityItemByToken<CC, ET> & EntityKey<CC>;
+/**
+ * Normalize literals: string | readonly string[] -\> union of strings.
+ */
+type KeysFrom<K> = K extends readonly (infer E)[] ? Extract<E, string> : K extends string ? K : never;
+/**
+ * Project item shape by keys; if K is never/unknown, fall back to T.
+ */
+type Projected<T, K> = [KeysFrom<K>] extends [never] ? T : T extends object ? Pick<T, Extract<KeysFrom<K>, keyof Exactify<T>>> : T;
+/**
+ * Projected item by token — narrows EntityItemByToken by K when provided.
+ */
+type ProjectedItemByToken<CC extends BaseConfigMap, ET extends EntityToken<CC>, K = unknown> = Projected<EntityItemByToken<CC, ET>, K>;
 
 /**
  * A result returned by a {@link ShardQueryFunction | `ShardQueryFunction`} querying an individual shard.
@@ -264,15 +276,16 @@ type EntityRecordByToken<CC extends BaseConfigMap, ET extends EntityToken<CC>> =
  * @typeParam ET - Entity token narrowing the item type.
  * @typeParam IT - Index token (for page key typing).
  * @typeParam CF - Optional values-first config literal type for narrowing.
+ * @typeParam K - Optional projection keys; narrows item shape when provided.
  *
  * @category EntityManager
  * @protected
  */
-interface ShardQueryResult<CC extends BaseConfigMap, ET extends EntityToken<CC>, IT extends string, CF = unknown> {
+interface ShardQueryResult<CC extends BaseConfigMap, ET extends EntityToken<CC>, IT extends string, CF = unknown, K = unknown> {
     /** The number of records returned. */
     count: number;
     /** The returned records. */
-    items: EntityItemByToken<CC, ET>[];
+    items: ProjectedItemByToken<CC, ET, K>[];
     /** The page key for the next query on this shard. */
     pageKey?: PageKeyByIndex<CC, ET, IT, CF>;
 }
@@ -290,13 +303,14 @@ interface ShardQueryResult<CC extends BaseConfigMap, ET extends EntityToken<CC>,
  * @typeParam ET - Entity token narrowing the item/record types.
  * @typeParam IT - Index token (inferred from shardQueryMap keys).
  * @typeParam CF - Optional values-first config literal type for narrowing.
+ * @typeParam K - Optional projection keys; narrows item shape when provided.
  *
  * @category EntityManager
  * @protected
  */
-type ShardQueryFunction<CC extends BaseConfigMap, ET extends EntityToken<CC>, IT extends string, CF = unknown> = CF extends {
+type ShardQueryFunction<CC extends BaseConfigMap, ET extends EntityToken<CC>, IT extends string, CF = unknown, K = unknown> = CF extends {
     indexes?: infer I;
-} ? I extends Record<string, unknown> ? IT extends keyof I & string ? (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF>> : never : (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF>> : (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF>>;
+} ? I extends Record<string, unknown> ? IT extends keyof I & string ? (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF, K>> : never : (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF, K>> : (hashKey: string, pageKey?: PageKeyByIndex<CC, ET, IT, CF>, pageSize?: number) => Promise<ShardQueryResult<CC, ET, IT, CF, K>>;
 
 /**
  * Relates a specific index token to a {@link ShardQueryFunction | `ShardQueryFunction`} to be performed on that index.
@@ -309,13 +323,14 @@ type ShardQueryFunction<CC extends BaseConfigMap, ET extends EntityToken<CC>, IT
  *                 literal keys (prefer `as const` at call sites), the map keys
  *                 are constrained to that set. Excess keys are rejected by
  *                 excess property checks on object literals.
+ * @typeParam K - Optional projection keys; narrows item shape when provided.
  *
  * @category EntityManager
  * @protected
  */
-type ShardQueryMap<CC extends BaseConfigMap, ET extends EntityToken<CC>, ITS extends string, CF = unknown> = CF extends {
+type ShardQueryMap<CC extends BaseConfigMap, ET extends EntityToken<CC>, ITS extends string, CF = unknown, K = unknown> = CF extends {
     indexes?: infer I;
-} ? I extends Record<string, unknown> ? Record<ITS & (keyof I & string), ShardQueryFunction<CC, ET, ITS & (keyof I & string), CF>> : Record<ITS, ShardQueryFunction<CC, ET, ITS, CF>> : Record<ITS, ShardQueryFunction<CC, ET, ITS, CF>>;
+} ? I extends Record<string, unknown> ? Record<ITS & (keyof I & string), ShardQueryFunction<CC, ET, ITS & (keyof I & string), CF, K>> : Record<ITS, ShardQueryFunction<CC, ET, ITS, CF, K>> : Record<ITS, ShardQueryFunction<CC, ET, ITS, CF, K>>;
 /**
  * Convenience alias for ShardQueryMap that derives ITS (index token subset)
  * from a values-first captured config CC (e.g., your config literal type).
@@ -328,7 +343,7 @@ type ShardQueryMap<CC extends BaseConfigMap, ET extends EntityToken<CC>, ITS ext
  *
  * This is optional DX sugar; it does not change runtime behavior.
  */
-type ShardQueryMapByCC<CC extends BaseConfigMap, ET extends EntityToken<CC>, CCLit = unknown> = ShardQueryMap<CC, ET, IndexTokensFrom<CCLit>, CCLit>;
+type ShardQueryMapByCC<CC extends BaseConfigMap, ET extends EntityToken<CC>, CCLit = unknown, K = unknown> = ShardQueryMap<CC, ET, IndexTokensFrom<CCLit>, CCLit, K>;
 /**
  * Convenience alias for ShardQueryMap that derives ITS (index token subset)
  * directly from a values-first config literal CF when it carries `indexes`.
@@ -338,7 +353,7 @@ type ShardQueryMapByCC<CC extends BaseConfigMap, ET extends EntityToken<CC>, CCL
  *
  * This is optional DX sugar; it does not change runtime behavior.
  */
-type ShardQueryMapByCF<CC extends BaseConfigMap, ET extends EntityToken<CC>, CF = unknown> = ShardQueryMap<CC, ET, IndexTokensOf<CF>, CF>;
+type ShardQueryMapByCF<CC extends BaseConfigMap, ET extends EntityToken<CC>, CF = unknown, K = unknown> = ShardQueryMap<CC, ET, IndexTokensOf<CF>, CF, K>;
 
 /**
  * Options passed to the {@link EntityManager.query | `EntityManager.query`} method.
@@ -347,11 +362,12 @@ type ShardQueryMapByCF<CC extends BaseConfigMap, ET extends EntityToken<CC>, CF 
  * @typeParam ET - Entity token narrowing the item types.
  * @typeParam ITS - Index token subset (inferred from shardQueryMap keys).
  * @typeParam CF - Optional values-first config literal type used for index-aware narrowing.
+ * @typeParam K - Optional projection keys; narrows item/sort shapes when provided.
  *
  * @category EntityManager
  * @protected
  */
-interface QueryOptions<CC extends BaseConfigMap, ET extends EntityToken<CC> = EntityToken<CC>, ITS extends string = string, CF = unknown> {
+interface QueryOptions<CC extends BaseConfigMap, ET extends EntityToken<CC> = EntityToken<CC>, ITS extends string = string, CF = unknown, K = unknown> {
     /** Identifies the entity to be queried. Key of {@link Config | `Config`} `entities`. */
     entityToken: ET;
     /**
@@ -389,11 +405,11 @@ interface QueryOptions<CC extends BaseConfigMap, ET extends EntityToken<CC> = En
      * page key, e.g. to match the same string against `firstName` and `lastName`
      * properties without performing a table scan for either.
      */
-    shardQueryMap: ShardQueryMap<CC, ET, ITS, CF>;
+    shardQueryMap: ShardQueryMap<CC, ET, ITS, CF, K>;
     /**
-     * A {@link SortOrder | `SortOrder`} object specifying the sort order of the result set. Defaults to `[]`.
+     * A {@link SortOrder | `SortOrder`} object specifying the sort order of the result set. Defaults to `[]`. Aligned with the projected item shape when K is provided.
      */
-    sortOrder?: SortOrder<EntityItemByToken<CC, ET>>;
+    sortOrder?: SortOrder<ProjectedItemByToken<CC, ET, K>>;
     /**
      * Lower limit to query shard space.
      *
@@ -430,7 +446,7 @@ interface QueryOptions<CC extends BaseConfigMap, ET extends EntityToken<CC> = En
  *
  * This is optional DX sugar; it does not change runtime behavior.
  */
-type QueryOptionsByCF<CC extends BaseConfigMap, ET extends EntityToken<CC> = EntityToken<CC>, CF = unknown> = QueryOptions<CC, ET, IndexTokensOf<CF>, CF>;
+type QueryOptionsByCF<CC extends BaseConfigMap, ET extends EntityToken<CC> = EntityToken<CC>, CF = unknown, K = unknown> = QueryOptions<CC, ET, IndexTokensOf<CF>, CF, K>;
 /**
  * Convenience alias for QueryOptions that derives ITS (index token subset)
  * from a values-first captured config CC (e.g., your config literal type).
@@ -443,7 +459,7 @@ type QueryOptionsByCF<CC extends BaseConfigMap, ET extends EntityToken<CC> = Ent
  *
  * This is optional DX sugar; it does not change runtime behavior.
  */
-type QueryOptionsByCC<CCMap extends BaseConfigMap, ET extends EntityToken<CCMap> = EntityToken<CCMap>, CC = unknown> = QueryOptions<CCMap, ET, IndexTokensFrom<CC>, CC>;
+type QueryOptionsByCC<CCMap extends BaseConfigMap, ET extends EntityToken<CCMap> = EntityToken<CCMap>, CC = unknown, K = unknown> = QueryOptions<CCMap, ET, IndexTokensFrom<CC>, CC, K>;
 
 /**
  * A result returned by a query across multiple shards, where each shard may receive multiple page queries via a dynamically-generated {@link ShardQueryFunction | `ShardQueryFunction`}.
@@ -451,15 +467,16 @@ type QueryOptionsByCC<CCMap extends BaseConfigMap, ET extends EntityToken<CCMap>
  * @typeParam CC - {@link ConfigMap | `ConfigMap`}.
  * @typeParam ET - Entity token narrowing the result item type.
  * @typeParam ITS - Index token subset (carried for symmetry; not represented in the shape).
+ * @typeParam K - Optional projection keys; narrows item shape when provided.
  *
  * @category EntityManager
  * @protected
  */
-interface QueryResult<CC extends BaseConfigMap, ET extends EntityToken<CC>, ITS extends string> {
+interface QueryResult<CC extends BaseConfigMap, ET extends EntityToken<CC>, ITS extends string, K = unknown> {
     /** Total number of records returned across all shards. */
     count: number;
     /** The returned records. */
-    items: EntityItemByToken<CC, ET>[];
+    items: ProjectedItemByToken<CC, ET, K>[];
     /**
      * A compressed, two-layer map of page keys, used to query the next page of
      * data for a given sort key on each shard of a given hash key.
@@ -598,7 +615,7 @@ declare class EntityManager<CC extends BaseConfigMap> {
      *
      * @protected
      */
-    query<ET extends EntityToken<CC>, ITS extends string, CF = unknown>(options: QueryOptions<CC, ET, ITS, CF>): Promise<QueryResult<CC, ET, ITS>>;
+    query<ET extends EntityToken<CC>, ITS extends string, CF = unknown, K = unknown>(options: QueryOptions<CC, ET, ITS, CF, K>): Promise<QueryResult<CC, ET, ITS, K>>;
 }
 
 /**
@@ -783,10 +800,11 @@ type QueryBuilderQueryOptions<CC extends BaseConfigMap, CF = unknown> = Omit<Que
  * @typeParam EntityClient - {@link BaseEntityClient | `BaseEntityClient`} derived class instance.
  * @typeParam IndexParams - Database platform-specific, index-specific query parameters.
  * @typeParam CF - Optional values-first config literal type for page key narrowing.
+ * @typeParam K - Optional projection keys; narrows item shape when provided.
  *
  * @category QueryBuilder
  */
-declare abstract class BaseQueryBuilder<CC extends BaseConfigMap, EntityClient extends BaseEntityClient<CC>, IndexParams, ET extends EntityToken<CC> = EntityToken<CC>, ITS extends string = string, CF = unknown> {
+declare abstract class BaseQueryBuilder<CC extends BaseConfigMap, EntityClient extends BaseEntityClient<CC>, IndexParams, ET extends EntityToken<CC> = EntityToken<CC>, ITS extends string = string, CF = unknown, K = unknown> {
     /** {@link BaseEntityClient | `EntityClient`} instance. */
     readonly entityClient: EntityClient;
     /** Entity token. */
@@ -803,15 +821,15 @@ declare abstract class BaseQueryBuilder<CC extends BaseConfigMap, EntityClient e
     readonly indexParamsMap: Record<ITS, IndexParams>;
     /** BaseQueryBuilder constructor. */
     constructor(options: BaseQueryBuilderOptions<CC, EntityClient>);
-    protected abstract getShardQueryFunction(indexToken: ITS): ShardQueryFunction<CC, ET, ITS, CF>;
+    protected abstract getShardQueryFunction(indexToken: ITS): ShardQueryFunction<CC, ET, ITS, CF, K>;
     /**
      * Builds a {@link ShardQueryMap | `ShardQueryMap`} object.
      *
      * @returns - The {@link ShardQueryMap | `ShardQueryMap`} object.
      */
-    build(): ShardQueryMap<CC, ET, ITS, CF>;
-    query(options: QueryBuilderQueryOptions<CC, CF>): Promise<QueryResult<CC, ET, ITS>>;
+    build(): ShardQueryMap<CC, ET, ITS, CF, K>;
+    query(options: QueryBuilderQueryOptions<CC, CF>): Promise<QueryResult<CC, ET, ITS, K>>;
 }
 
 export { BaseEntityClient, BaseQueryBuilder, EntityManager, configSchema, createEntityManager };
-export type { BaseConfigMap, BaseEntityClientOptions, BaseQueryBuilderOptions, CapturedConfigMapFrom, Config, ConfigInput, ConfigMap, EntitiesFromSchema, EntityItem, EntityItemByToken, EntityKey, EntityOfToken, EntityRecord, EntityRecordByToken, EntityToken, HasIndexFor, HashKeyFrom, IndexComponentTokens, IndexHashKeyOf, IndexRangeKeyOf, IndexTokensFrom, IndexTokensOf, PageKey, PageKeyByIndex, ParsedConfig, QueryBuilderQueryOptions, QueryOptions, QueryOptionsByCC, QueryOptionsByCF, QueryResult, RangeKeyFrom, ShardBump, ShardQueryFunction, ShardQueryMap, ShardQueryMapByCC, ShardQueryMapByCF, ShardQueryResult, ShardedKeysFrom, TranscodedPropertiesFrom, UnshardedKeysFrom, ValidateConfigMap };
+export type { BaseConfigMap, BaseEntityClientOptions, BaseQueryBuilderOptions, CapturedConfigMapFrom, Config, ConfigInput, ConfigMap, EntitiesFromSchema, EntityItem, EntityItemByToken, EntityKey, EntityOfToken, EntityRecord, EntityRecordByToken, EntityToken, HasIndexFor, HashKeyFrom, IndexComponentTokens, IndexHashKeyOf, IndexRangeKeyOf, IndexTokensFrom, IndexTokensOf, KeysFrom, PageKey, PageKeyByIndex, ParsedConfig, Projected, ProjectedItemByToken, QueryBuilderQueryOptions, QueryOptions, QueryOptionsByCC, QueryOptionsByCF, QueryResult, RangeKeyFrom, ShardBump, ShardQueryFunction, ShardQueryMap, ShardQueryMapByCC, ShardQueryMapByCF, ShardQueryResult, ShardedKeysFrom, TranscodedPropertiesFrom, UnshardedKeysFrom, ValidateConfigMap };
