@@ -5,8 +5,8 @@
   },
   "dependencies": {
     "@karmaniverous/controlled-proxy": "^0.1.4",
-    "@karmaniverous/entity-client-dynamodb": "^0.3.0",
-    "@karmaniverous/entity-manager": "^7.0.1",
+    "@karmaniverous/entity-client-dynamodb": "^0.4.0",
+    "@karmaniverous/entity-manager": "^7.1.0",
     "@karmaniverous/entity-tools": "^0.7.1",
     "@karmaniverous/string-utilities": "^0.2.1",
     "nanoid": "^5.1.6",
@@ -15,7 +15,7 @@
   },
   "description": "A working demonstration of Entity Manager in action.",
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.933.0",
+    "@aws-sdk/client-dynamodb": "^3.934.0",
     "@dotenvx/dotenvx": "^1.51.1",
     "@eslint/js": "^9.39.1",
     "@faker-js/faker": "^10.1.0",
@@ -29,7 +29,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-tsdoc": "^0.5.0",
-    "knip": "^5.69.1",
+    "knip": "^5.70.0",
     "lefthook": "^2.0.4",
     "prettier": "^3.6.2",
     "release-it": "^19.0.6",

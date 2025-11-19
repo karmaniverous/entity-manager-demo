@@ -189,22 +189,34 @@ declare class EntityClient<C extends BaseConfigMap> extends BaseEntityClient<C> 
      */
     getItem<ET extends EntityToken<C>>(entityToken: ET, key: EntityKey<C>, attributes: readonly string[], options: GetItemOptions & {
         removeKeys: true;
-    }): Promise<ReplaceKey<GetCommandOutput, 'Item', EntityItemByToken<C, ET> | undefined>>;
+    }): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: EntityItemByToken<C, ET> | undefined;
+    }>;
     getItem<ET extends EntityToken<C>>(entityToken: ET, key: EntityKey<C>, attributes: readonly string[], options: GetItemOptions & {
         removeKeys: false;
-    }): Promise<ReplaceKey<GetCommandOutput, 'Item', EntityRecordByToken<C, ET> | undefined>>;
+    }): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: EntityRecordByToken<C, ET> | undefined;
+    }>;
     getItem<ET extends EntityToken<C>, RK extends boolean | undefined = undefined>(entityToken: ET, key: EntityKey<C>, options?: Omit<GetItemOptions, 'removeKeys'> & {
         removeKeys?: RK;
-    }): Promise<ReplaceKey<GetCommandOutput, 'Item', RK extends true ? EntityItemByToken<C, ET> | undefined : RK extends false ? EntityRecordByToken<C, ET> | undefined : EntityRecordByToken<C, ET> | EntityItemByToken<C, ET> | undefined>>;
-    getItem<ET extends EntityToken<C>, A extends readonly string[]>(entityToken: ET, key: EntityKey<C>, attributes: A, options?: GetItemOptions): Promise<ReplaceKey<GetCommandOutput, 'Item', Projected<EntityRecordByToken<C, ET>, A> | Projected<EntityItemByToken<C, ET>, A> | undefined>>;
-    getItem<ET extends EntityToken<C>>(entityToken: ET, key: EntityKey<C>, attributes: string[], options?: GetItemOptions): Promise<ReplaceKey<GetCommandOutput, 'Item', EntityRecordByToken<C, ET> | EntityItemByToken<C, ET> | undefined>>;
-    getItem<ET extends EntityToken<C>>(entityToken: ET, options: MakeOptional<GetCommandInput, 'TableName'>): Promise<ReplaceKey<GetCommandOutput, 'Item', EntityRecordByToken<C, ET> | EntityItemByToken<C, ET> | undefined>>;
+    }): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: (RK extends true ? EntityItemByToken<C, ET> | undefined : RK extends false ? EntityRecordByToken<C, ET> | undefined : EntityRecordByToken<C, ET> | EntityItemByToken<C, ET>) | undefined;
+    }>;
+    getItem<ET extends EntityToken<C>, A extends readonly string[]>(entityToken: ET, key: EntityKey<C>, attributes: A, options?: GetItemOptions): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: Projected<EntityRecordByToken<C, ET>, A> | Projected<EntityItemByToken<C, ET>, A> | undefined;
+    }>;
+    getItem<ET extends EntityToken<C>>(entityToken: ET, key: EntityKey<C>, attributes: string[], options?: GetItemOptions): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: EntityRecordByToken<C, ET> | EntityItemByToken<C, ET> | undefined;
+    }>;
+    getItem<ET extends EntityToken<C>>(entityToken: ET, options: MakeOptional<GetCommandInput, 'TableName'>): Promise<Omit<GetCommandOutput, 'Item'> & {
+        Item?: EntityRecordByToken<C, ET> | EntityItemByToken<C, ET> | undefined;
+    }>;
     /**
      * Get item from a DynamoDB table.
      *
      * @param key - EntityKey object.
      * @param attributes - Item attributes to retrieve.
-     * @param options - GetCommandInput with Key & projection omitted; TableName optional.
+     * @param options - GetCommandInput with Key omitted; TableName optional.
      *
      * @overload
      */
