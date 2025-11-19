@@ -1,4 +1,4 @@
-import { QueryBuilder } from '@karmaniverous/entity-client-dynamodb';
+import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
 
 import type { Email } from '../../entity-manager/Email';
@@ -43,12 +43,21 @@ export const searchEmails = async (params: SearchEmailsParams) => {
   // Determine index token based on params.
   const indexToken = hashKeyToken === 'userHashKey' ? 'userCreated' : 'created';
 
-  // Create an email entity query & query database.
-  const result = await new QueryBuilder({
+  // CF literal for index-token narrowing (optional DX sugar).
+  const cf = {
+    indexes: {
+      created: { hashKey: 'hashKey', rangeKey: 'created' },
+      userCreated: { hashKey: 'userHashKey', rangeKey: 'created' },
+    },
+  } as const;
+
+  // Create an email entity query & query database (ET inferred; ITS from cf).
+  const result = await createQueryBuilder({
     entityClient,
     entityToken,
     hashKeyToken,
     pageKeyMap,
+    cf,
   })
     .addRangeKeyCondition(indexToken, {
       property: 'created',

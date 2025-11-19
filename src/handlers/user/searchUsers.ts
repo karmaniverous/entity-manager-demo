@@ -1,4 +1,4 @@
-import { QueryBuilder } from '@karmaniverous/entity-client-dynamodb';
+import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
@@ -89,12 +89,45 @@ export const searchUsers = async (params: SearchUsersParams) => {
       entityClient.entityManager.findIndexToken(hashKeyToken, rangeKeyToken)!,
   );
 
-  // Create a query builder.
-  let queryBuilder = new QueryBuilder({
+  // CF literal for index-token narrowing (optional DX sugar).
+  const cf = {
+    indexes: {
+      created: { hashKey: 'hashKey', rangeKey: 'created' },
+      firstName: { hashKey: 'hashKey', rangeKey: 'firstNameRangeKey' },
+      lastName: { hashKey: 'hashKey', rangeKey: 'lastNameRangeKey' },
+      phone: { hashKey: 'hashKey', rangeKey: 'phone' },
+      updated: { hashKey: 'hashKey', rangeKey: 'updated' },
+      userBeneficiaryCreated: {
+        hashKey: 'beneficiaryHashKey',
+        rangeKey: 'created',
+      },
+      userBeneficiaryFirstName: {
+        hashKey: 'beneficiaryHashKey',
+        rangeKey: 'firstNameRangeKey',
+      },
+      userBeneficiaryLastName: {
+        hashKey: 'beneficiaryHashKey',
+        rangeKey: 'lastNameRangeKey',
+      },
+      userBeneficiaryPhone: {
+        hashKey: 'beneficiaryHashKey',
+        rangeKey: 'phone',
+      },
+      userBeneficiaryUpdated: {
+        hashKey: 'beneficiaryHashKey',
+        rangeKey: 'updated',
+      },
+      userCreated: { hashKey: 'userHashKey', rangeKey: 'created' },
+    },
+  } as const;
+
+  // Create a query builder (ET inferred; ITS from cf).
+  let queryBuilder = createQueryBuilder({
     entityClient,
     entityToken,
     hashKeyToken,
     pageKeyMap,
+    cf,
   });
 
   // Iterate over index tokens.
