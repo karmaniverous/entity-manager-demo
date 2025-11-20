@@ -130,4 +130,9 @@
 - Cleanup: remove unused types
   - Deleted the unused `MyConfigMap` interface and its imports in
     src/entity-manager/entityManager.ts (config is values-/schemas-first now).
-  - Removed unused type aliases `EmailSchema` and `UserSchema` in schemas.ts.
+  - Removed unused type aliases `EmailSchema` and `UserSchema` in schemas.ts.
+
+- Handlers: token-aware reads with literal removeKeys (no casts)
+  - Added overloads to readEmail/readUser and branched on keepKeys to pass
+    literal removeKeys flags to token-aware getItems. Removed casts and return
+    items directly (records when keepKeys=true; domain items otherwise).
