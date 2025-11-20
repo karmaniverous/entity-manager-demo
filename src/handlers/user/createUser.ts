@@ -3,7 +3,7 @@ import { normstr } from '@karmaniverous/string-utilities';
 import { nanoid } from 'nanoid';
 
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/User';
+import type { User } from '../../entity-manager/types';
 import { readUser } from './readUser';
 
 /**

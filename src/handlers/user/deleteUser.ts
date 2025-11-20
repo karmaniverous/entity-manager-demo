@@ -1,5 +1,5 @@
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/User';
+import type { User } from '../../entity-manager/types';
 import { readUser } from './readUser';
 
 /**

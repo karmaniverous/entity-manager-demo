@@ -1,7 +1,6 @@
 import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
-
-import type { Email } from '../../entity-manager/Email';
+import type { Email } from '../../entity-manager/types';
 import { entityClient } from '../../entity-manager/entityClient';
 
 /**
@@ -41,7 +40,8 @@ export const searchEmails = async (params: SearchEmailsParams) => {
   const hashKeyToken = userId ? 'userHashKey' : 'hashKey';
 
   // Determine index token based on params.
-  const indexToken = hashKeyToken === 'userHashKey' ? 'userCreated' : 'created';
+  const indexToken: keyof typeof cf.indexes =
+    hashKeyToken === 'userHashKey' ? 'userCreated' : 'created';
 
   // CF literal for index-token narrowing (optional DX sugar).
   const cf = {
@@ -65,7 +65,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
       value: { from: createdFrom, to: createdTo },
     })
     .query({
-      item: { userId },
+      item: userId ? { userId } : {},
       sortOrder: [{ property: 'created', desc: sortDesc }],
       timestampFrom: createdFrom,
       timestampTo: createdTo,

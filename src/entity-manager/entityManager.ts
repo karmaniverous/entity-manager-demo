@@ -1,10 +1,9 @@
 import { createEntityManager } from '@karmaniverous/entity-manager';
 import { defaultTranscodes } from '@karmaniverous/entity-tools';
-import { z } from 'zod';
 
 import { errorLogger } from '../util/logger';
-import { Email } from './Email';
-import { User } from './User';
+import { emailSchema, userSchema } from './schemas';
+import type { Email, User } from './types';
 
 // Entity interfaces combined into EntityMap.
 export interface MyConfigMap {
@@ -27,26 +26,6 @@ export interface MyConfigMap {
 
 // Current timestamp will act as break point for sharding schedule.
 const now = Date.now();
-
-// Zod schemas declare only base (non-generated) properties per entity.
-// Global keys and generated tokens are layered by EntityManager.
-const emailSchema = z.object({
-  created: z.number(),
-  email: z.string(),
-  userId: z.string(),
-});
-
-const userSchema = z.object({
-  beneficiaryId: z.string(),
-  created: z.number(),
-  firstName: z.string(),
-  firstNameCanonical: z.string(),
-  lastName: z.string(),
-  lastNameCanonical: z.string(),
-  phone: z.string().optional(),
-  updated: z.number(),
-  userId: z.string(),
-});
 
 // Config object for EntityManager.
 const config = {

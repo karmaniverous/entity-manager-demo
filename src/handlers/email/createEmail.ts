@@ -1,6 +1,6 @@
 import type { MakeOptional } from '@karmaniverous/entity-tools';
 
-import type { Email } from '../../entity-manager/Email';
+import type { Email } from '../../entity-manager/types';
 import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 

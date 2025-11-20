@@ -1,4 +1,4 @@
-import type { Email } from '../../entity-manager/Email';
+import type { Email } from '../../entity-manager/types';
 import { entityClient } from '../../entity-manager/entityClient';
 
 /**
