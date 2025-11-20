@@ -112,4 +112,12 @@
   - Proposed a types-only change to make `QueryBuilderQueryOptions` carry `ET`
     and update `BaseQueryBuilder.query` to accept the ET-aware options. This
     eliminates the need to cast `options.item` to `never` in downstream repos
-    while preserving runtime behavior and backward compatibility.
+    while preserving runtime behavior and backward compatibility.
+
+- Consume upstream ET-aware QueryBuilder; preserve literal tokens locally
+  - Bumped deps to entity-manager ^7.1.2 and entity-client-dynamodb ^0.4.2.
+  - Preserved literal keys for generatedProperties (sharded/unsharded objects)
+    to prevent widening of special keys to `string` and remove index-signature
+    conflicts in token-aware helpers.
+  - Removed temporary `item` casts in email/user search handlers; options.item
+    is now typed by ET.

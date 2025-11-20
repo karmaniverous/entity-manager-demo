@@ -53,7 +53,7 @@ const config = {
     sharded: {
       beneficiaryHashKey: ['beneficiaryId'] as const,
       userHashKey: ['userId'] as const,
-    },
+    } as const,
     unsharded: {
       firstNameRangeKey: [
         'firstNameCanonical',
@@ -65,8 +65,8 @@ const config = {
         'firstNameCanonical',
         'created',
       ] as const,
-    },
-  },
+    } as const,
+  } as const,
   indexes: {
     created: { hashKey: 'hashKey', rangeKey: 'created', projections: [] },
     firstName: {

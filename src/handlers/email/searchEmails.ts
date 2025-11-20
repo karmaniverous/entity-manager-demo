@@ -66,7 +66,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
       value: { from: createdFrom, to: createdTo },
     })
     .query({
-      item: (userId ? { userId } : {}) as never,
+      item: userId ? { userId } : {},
       sortOrder: [{ property: 'created', desc: sortDesc }],
       timestampFrom: createdFrom,
       timestampTo: createdTo,

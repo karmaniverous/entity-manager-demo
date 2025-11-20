@@ -226,8 +226,8 @@ export const searchUsers = async (params: SearchUsersParams) => {
 
   // Query database.
   const result = await queryBuilder.query({
-    // Satisfy QB typing; runtime value preserved.
-    item: { beneficiaryId } as unknown as never,
+    // Provide a partial item; empty when beneficiaryId is not provided.
+    item: beneficiaryId ? { beneficiaryId } : {},
     timestampFrom: createdFrom,
     timestampTo: createdTo,
   });
