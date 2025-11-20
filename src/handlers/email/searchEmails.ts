@@ -1,7 +1,8 @@
 import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
-import type { Email } from '../../entity-manager/types';
+
 import { entityClient } from '../../entity-manager/entityClient';
+import type { Email } from '../../entity-manager/types';
 
 /**
  * Parameters for the {@link searchEmails | `searchEmails`} function.
@@ -65,7 +66,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
       value: { from: createdFrom, to: createdTo },
     })
     .query({
-      item: userId ? { userId } : {},
+      item: (userId ? { userId } : {}) as never,
       sortOrder: [{ property: 'created', desc: sortDesc }],
       timestampFrom: createdFrom,
       timestampTo: createdTo,

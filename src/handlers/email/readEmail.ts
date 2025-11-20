@@ -1,5 +1,5 @@
-import type { Email } from '../../entity-manager/types';
 import { entityClient } from '../../entity-manager/entityClient';
+import type { Email } from '../../entity-manager/types';
 
 /**
  * Read email records from the database based on unique email.

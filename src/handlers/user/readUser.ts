@@ -1,5 +1,5 @@
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/User';
+import type { User } from '../../entity-manager/types';
 
 /**
  * Read user records from the database based on unique userId.

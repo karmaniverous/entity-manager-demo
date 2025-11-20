@@ -3,7 +3,7 @@ import { sort } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
 import { entityClient } from '../../entity-manager/entityClient';
-import { User } from '../../entity-manager/User';
+import type { User } from '../../entity-manager/types';
 
 /**
  * Parameters for the {@link searchUsers | `searchUsers`} function.
@@ -83,12 +83,6 @@ export const searchUsers = async (params: SearchUsersParams) => {
           : ['lastNameRangeKey']
         : ['updated'];
 
-  // Determine index tokens.
-  const indexTokens = rangeKeyTokens.map(
-    (rangeKeyToken) =>
-      entityClient.entityManager.findIndexToken(hashKeyToken, rangeKeyToken)!,
-  );
-
   // CF literal for index-token narrowing (optional DX sugar).
   const cf = {
     indexes: {
@@ -121,6 +115,24 @@ export const searchUsers = async (params: SearchUsersParams) => {
     },
   } as const;
 
+  // Route map: (hashKeyToken, rangeKeyToken) -> index token.
+  const route = {
+    hashKey: {
+      created: 'created',
+      firstNameRangeKey: 'firstName',
+      lastNameRangeKey: 'lastName',
+      phone: 'phone',
+      updated: 'updated',
+    },
+    beneficiaryHashKey: {
+      created: 'userBeneficiaryCreated',
+      firstNameRangeKey: 'userBeneficiaryFirstName',
+      lastNameRangeKey: 'userBeneficiaryLastName',
+      phone: 'userBeneficiaryPhone',
+      updated: 'userBeneficiaryUpdated',
+    },
+  } as const;
+
   // Create a query builder (ET inferred; ITS from cf).
   let queryBuilder = createQueryBuilder({
     entityClient,
@@ -130,17 +142,20 @@ export const searchUsers = async (params: SearchUsersParams) => {
     cf,
   });
 
-  // Iterate over index tokens.
-  for (let i = 0; i < indexTokens.length; i++) {
+  // Iterate over range key tokens and add conditions per-index.
+  for (const rangeKeyToken of rangeKeyTokens) {
+    const indexToken =
+      route[hashKeyToken][rangeKeyToken as keyof (typeof route)['hashKey']];
+
     // Add a range key condition.
-    if (rangeKeyTokens[i] === 'created')
-      queryBuilder = queryBuilder.addRangeKeyCondition(indexTokens[i], {
+    if (rangeKeyToken === 'created')
+      queryBuilder = queryBuilder.addRangeKeyCondition(indexToken, {
         property: 'created',
         operator: 'between',
         value: { from: createdFrom, to: createdTo },
       });
-    else if (rangeKeyTokens[i] === 'firstNameRangeKey')
-      queryBuilder = queryBuilder.addRangeKeyCondition(indexTokens[i], {
+    else if (rangeKeyToken === 'firstNameRangeKey')
+      queryBuilder = queryBuilder.addRangeKeyCondition(indexToken, {
         property: 'firstNameRangeKey',
         operator: 'begins_with',
         value: entityClient.entityManager.encodeGeneratedProperty(
@@ -148,8 +163,8 @@ export const searchUsers = async (params: SearchUsersParams) => {
           { firstNameCanonical: name },
         ),
       });
-    else if (rangeKeyTokens[i] === 'lastNameRangeKey')
-      queryBuilder = queryBuilder.addRangeKeyCondition(indexTokens[i], {
+    else if (rangeKeyToken === 'lastNameRangeKey')
+      queryBuilder = queryBuilder.addRangeKeyCondition(indexToken, {
         property: 'lastNameRangeKey',
         operator: 'begins_with',
         value: entityClient.entityManager.encodeGeneratedProperty(
@@ -157,23 +172,23 @@ export const searchUsers = async (params: SearchUsersParams) => {
           { lastNameCanonical: name },
         ),
       });
-    else if (rangeKeyTokens[i] === 'phone')
-      queryBuilder = queryBuilder.addRangeKeyCondition(indexTokens[i], {
+    else if (rangeKeyToken === 'phone')
+      queryBuilder = queryBuilder.addRangeKeyCondition(indexToken, {
         property: 'phone',
         operator: 'begins_with',
         value: phone,
       });
-    else if (rangeKeyTokens[i] === 'updated')
-      queryBuilder = queryBuilder.addRangeKeyCondition(indexTokens[i], {
+    else if (rangeKeyToken === 'updated')
+      queryBuilder = queryBuilder.addRangeKeyCondition(indexToken, {
         property: 'updated',
         operator: 'between',
         value: { from: updatedFrom, to: updatedTo },
       });
-    else throw new Error(`Unsupported range key token '${rangeKeyTokens[i]}'.`);
+    else throw new Error(`Unsupported range key token '${rangeKeyToken}'.`);
 
     // Add created filter condition if not covered by range key condition.
-    if ((createdFrom || createdTo) && rangeKeyTokens[i] !== 'created')
-      queryBuilder = queryBuilder.addFilterCondition(indexTokens[i], {
+    if ((createdFrom || createdTo) && rangeKeyToken !== 'created')
+      queryBuilder = queryBuilder.addFilterCondition(indexToken, {
         property: 'created',
         operator: 'between',
         value: { from: createdFrom, to: createdTo },
@@ -182,9 +197,9 @@ export const searchUsers = async (params: SearchUsersParams) => {
     // Add name filter condition if not covered by range key condition.
     if (
       name &&
-      !['firstNameRangeKey', 'lastNameRangeKey'].includes(rangeKeyTokens[i])
+      !['firstNameRangeKey', 'lastNameRangeKey'].includes(rangeKeyToken)
     )
-      queryBuilder = queryBuilder.addFilterCondition(indexTokens[i], {
+      queryBuilder = queryBuilder.addFilterCondition(indexToken, {
         operator: 'or',
         conditions: [
           {
@@ -200,11 +215,9 @@ export const searchUsers = async (params: SearchUsersParams) => {
         ],
       });
 
-    // If phone exists it is always covered by range key condition.
-
     // Add updated filter condition if not covered by range key condition.
-    if ((updatedFrom || updatedTo) && rangeKeyTokens[i] !== 'updated')
-      queryBuilder = queryBuilder.addFilterCondition(indexTokens[i], {
+    if ((updatedFrom || updatedTo) && rangeKeyToken !== 'updated')
+      queryBuilder = queryBuilder.addFilterCondition(indexToken, {
         property: 'updated',
         operator: 'between',
         value: { from: updatedFrom, to: updatedTo },
@@ -213,7 +226,8 @@ export const searchUsers = async (params: SearchUsersParams) => {
 
   // Query database.
   const result = await queryBuilder.query({
-    item: { beneficiaryId },
+    // Satisfy QB typing; runtime value preserved.
+    item: { beneficiaryId } as unknown as never,
     timestampFrom: createdFrom,
     timestampTo: createdTo,
   });
@@ -230,10 +244,10 @@ export const searchUsers = async (params: SearchUsersParams) => {
   // Enrich result items.
   const { items } = await entityClient.getItems(keys);
 
-  // Sort enriched items.
+  // Sort enriched items on domain properties.
   const sortedItems = sort(items, [
     {
-      property: sortOrder === 'name' ? 'lastNameRangeKey' : sortOrder,
+      property: sortOrder === 'name' ? 'lastNameCanonical' : sortOrder,
       desc: sortDesc,
     },
   ]);

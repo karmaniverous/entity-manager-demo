@@ -1,5 +1,6 @@
 import { createEntityManager } from '@karmaniverous/entity-manager';
 import { defaultTranscodes } from '@karmaniverous/entity-tools';
+import type { ConfigInput } from '@karmaniverous/entity-manager';
 
 import { errorLogger } from '../util/logger';
 import { emailSchema, userSchema } from './schemas';
@@ -34,7 +35,7 @@ const config = {
   entitiesSchema: {
     email: emailSchema,
     user: userSchema,
-  },
+  } as const,
 
   entities: {
     email: {
@@ -50,12 +51,20 @@ const config = {
   },
   generatedProperties: {
     sharded: {
-      beneficiaryHashKey: ['beneficiaryId'],
-      userHashKey: ['userId'],
+      beneficiaryHashKey: ['beneficiaryId'] as const,
+      userHashKey: ['userId'] as const,
     },
     unsharded: {
-      firstNameRangeKey: ['firstNameCanonical', 'lastNameCanonical', 'created'],
-      lastNameRangeKey: ['lastNameCanonical', 'firstNameCanonical', 'created'],
+      firstNameRangeKey: [
+        'firstNameCanonical',
+        'lastNameCanonical',
+        'created',
+      ] as const,
+      lastNameRangeKey: [
+        'lastNameCanonical',
+        'firstNameCanonical',
+        'created',
+      ] as const,
     },
   },
   indexes: {
@@ -102,7 +111,7 @@ const config = {
       rangeKey: 'created',
       projections: [],
     },
-  },
+  } as const,
   propertyTranscodes: {
     beneficiaryId: 'string',
     created: 'timestamp',
@@ -114,7 +123,7 @@ const config = {
     userId: 'string',
   },
   transcodes: defaultTranscodes,
-};
+} satisfies ConfigInput;
 
 // Configure & export EntityManager instance.
 export const entityManager = createEntityManager(config, errorLogger);

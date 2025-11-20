@@ -2,12 +2,12 @@
 
 ## Next up
 
-1) Schemas & types (schema-first)
+1. Schemas & types (schema-first)
    - Add src/entity-manager/schemas.ts with Zod schemas for Email and User (domain-only).
    - Add src/entity-manager/types.ts exporting inferred types (z.infer).
    - Remove any extends Entity usage from public domain types (no index signatures).
 
-2) Value-first manager (config literal)
+2. Value-first manager (config literal)
    - Keep/confirm a single config literal (as const) with:
      - hashKey/rangeKey
      - entitiesSchema: { email, user }
@@ -16,26 +16,26 @@
      - propertyTranscodes and transcodes (defaultTranscodes)
    - Use createEntityManager(config, logger); ensure no runtime errors with entitiesSchema.
 
-3) Token-aware reads (handlers)
+3. Token-aware reads (handlers)
    - Refactor readUser/readEmail to use getItems('user'|'email', keys, { removeKeys: boolean literal }) and add overloads:
      - keepKeys true → records with keys; keepKeys false/omitted → items (domain).
    - Ensure usages in delete/update/news handlers align with keepKeys selection (records when composing keys; items for presentation).
 
-4) Writes & updates (no casts)
+4. Writes & updates (no casts)
    - create/update handlers call addKeys/getPrimaryKey/removeKeys with inferred types (no casts).
    - Update updateUser to keep domain-only sorting; no generated token usage in outward shapes.
 
-5) Search flows (CF-aware)
+5. Search flows (CF-aware)
    - Replace dynamic findIndexToken usage with literal index tokens from a CF literal (as const).
    - Use createQueryBuilder({ entityClient, entityToken, hashKeyToken, cf }); add per-index conditions; build(); call entityManager.query.
    - Sort results on domain properties; remove keys if necessary for response boundaries.
    - (Optional) Demonstrate tuple projection narrowing via setProjection or projected getItems.
 
-6) Tests
+6. Tests
    - Keep/expand integration tests: table lifecycle; CRUD; delete; search (created, name, beneficiary, phone, user emails); simple paging with pageKeyMap.
    - (Optional) Add tsd tests to pin: removeKeys narrowing; projection narrowing; CF index-token enforcement.
 
-7) README overhaul
+7. README overhaul
    - Add minimal end-to-end example:
      - Zod schemas → config literal (as const) → createEntityManager
      - EntityClient + token-aware read (removeKeys) + CF-aware QueryBuilder → manager.query
@@ -96,4 +96,14 @@
     factory-level strip before invoking the constructor. Keeps README
     schema-first flow working and avoids the current ZodError while preserving
     existing runtime validation and behavior.
- 
+
+- Schema-first types and typed queries (partial)
+  - Introduced Zod schemas and schema-inferred domain types:
+    • src/entity-manager/schemas.ts
+    • src/entity-manager/types.ts
+  - Narrowed config capture with `satisfies ConfigInput` and const tuples/objects
+    to preserve literal tokens for generated properties and indexes.
+  - Replaced dynamic `findIndexToken` in user search with a typed route map; CF
+    literal drives index-token union; adjusted sorting to domain properties.
+  - Fixed imports to new types and satisfied QueryBuilder options with a typed
+    cast at the call sites (`item: ... as never`).
