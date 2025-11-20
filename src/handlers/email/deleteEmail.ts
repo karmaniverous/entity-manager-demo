@@ -2,6 +2,8 @@ import type { EmailItem } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
+// Email is unique by address in this demo; there will be at most one record.
+// We read -> derive exact keys -> delete for safety.
 /**
  * Delete email records from the database based on unique email.
  *

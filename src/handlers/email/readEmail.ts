@@ -2,6 +2,10 @@ import type { EmailItem, EmailRecord } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
 
 /**
+ * Read email by unique email (normalized).
+ * keepKeys=true → return records; keepKeys omitted/false → return domain items.
+ */
+/**
  * Read email records from the database based on unique email.
  *
  * @param email - Email record unique id.
@@ -29,5 +33,6 @@ export async function readEmail(email: EmailItem['email'], keepKeys = false) {
 
   if (keepKeys) return items;
 
+  // For API responses, return domain items without generated/global keys.
   return entityClient.entityManager.removeKeys(entityToken, items);
 }

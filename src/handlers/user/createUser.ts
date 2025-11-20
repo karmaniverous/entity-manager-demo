@@ -38,6 +38,8 @@ export const createUser = async (
     throw new Error('Email record already exists.');
 
   // Create new item.
+  // Canonical forms are stored alongside raw names to make searching trivial
+  // and case/diacritic-insensitive.
   const now = Date.now();
   const item: UserItem = {
     ...rest,
@@ -51,6 +53,8 @@ export const createUser = async (
   };
 
   // Generate record from item.
+  // This adds global hash/range keys and any generated tokens required by
+  // indexes based on the Entity Manager config.
   const record = entityClient.entityManager.addKeys(entityToken, item);
 
   // Create record in database.

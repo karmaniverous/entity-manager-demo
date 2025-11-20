@@ -29,9 +29,12 @@ export const createEmail = async (
   const { email, userId, ...rest } = params;
 
   // Normalized params.
+  // Normalize email for case-insensitive uniqueness. Store only the
+  // normalized value so reads/writes are consistent and search is trivial.
   const normalizedEmail = email.toLowerCase();
 
   // Throw error if record already exists.
+  // Uniqueness is enforced by the entity config (uniqueProperty).
   if ((await readEmail(normalizedEmail)).length)
     throw new Error('Email record already exists.');
 
@@ -47,6 +50,8 @@ export const createEmail = async (
   // Generate record from item.
   const record = entityClient.entityManager.addKeys(entityToken, item);
 
+  // Persist the storage-facing record (includes generated/global keys);
+  // handlers return the domain item shape for DX.
   // Create record in database.
   await entityClient.putItem(record);
 

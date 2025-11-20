@@ -1,3 +1,9 @@
+/**
+ * Email search: simple example of index-aware querying with QueryBuilder.
+ * - Choose hashKey token based on optional userId
+ * - Add a created range condition
+ * - Enrich via getItems and sort on domain properties
+ */
 import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
 
@@ -40,6 +46,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
   // Determine hash key token.
   const hashKeyToken = userId ? 'userHashKey' : 'hashKey';
 
+  // Concrete index token chosen from a tiny CF literal (DX sugar + typing).
   // Determine index token based on params.
   const indexToken: keyof typeof cf.indexes =
     hashKeyToken === 'userHashKey' ? 'userCreated' : 'created';
@@ -65,6 +72,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
       operator: 'between',
       value: { from: createdFrom, to: createdTo },
     })
+    // Build and execute a cross-shard query via the manager.
     .query({
       item: userId ? { userId } : {},
       sortOrder: [{ property: 'created', desc: sortDesc }],
@@ -84,6 +92,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
   // Enrich result items.
   const { items } = await entityClient.getItems(keys);
 
+  // Sort on domain property; adapters may also project to minimize I/O.
   // Sort enriched items.
   const sortedItems = sort(items, [
     {
@@ -92,6 +101,7 @@ export const searchEmails = async (params: SearchEmailsParams) => {
     },
   ]);
 
+  // Return domain items (generated/global keys removed) for API ergonomics.
   // Remove keys & re-integrate with result.
   result.items = entityClient.entityManager.removeKeys(
     entityToken,

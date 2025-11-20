@@ -2,6 +2,10 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { UserItem, UserRecord } from '../../entity-manager/User';
 
 /**
+ * Read user by unique userId.
+ * keepKeys=true → return records; keepKeys omitted/false → return domain items.
+ */
+/**
  * Read user records from the database based on unique userId.
  *
  * @param userId - User record unique id.

@@ -1,3 +1,11 @@
+/**
+ * User search: flexible search across multiple indexes.
+ *
+ * Highlights:
+ * - Beneficiary-scoped vs global (hash key token)
+ * - Name search routes to first/last name indexes
+ * - Optional phone and created/updated time ranges
+ */
 import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';

@@ -2,6 +2,8 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
+// Read -> exact keys -> delete. Enforces existence and prevents accidental
+// deletion by partial key.
 /**
  * Delete user records from the database based on unique userId.
  *

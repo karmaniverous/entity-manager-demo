@@ -6,6 +6,26 @@ import { errorLogger } from '../util/logger';
 import { emailSchema } from './Email';
 import { userSchema } from './User';
 
+/**
+ * EntityManager configuration (values-first + schema-first).
+ *
+ * Highlights:
+ * - Entities Email and User are declared with Zod schemas; types are inferred.
+ * - Generated properties (sharded/unsharded) are declared using string tokens.
+ * - Index tokens match handler usage and drive typed query/page-keys.
+ * - Transcodes map domain types to lexicographically sortable strings.
+ *
+ * The “values-first” literal (as const) preserves literal tokens at the type
+ * level, which unlocks great inference across the stack (no casts, no generics
+ * at call sites).
+ *
+ * The sharding schedule uses “now” as a breakpoint so that new data is sharded
+ * while historical data remains unsharded — useful to demonstrate cross-shard
+ * behavior deterministically in tests.
+ *
+ * See src/handlers/* for how this config is consumed via QueryBuilder and how
+ * results are deduped/sorted on domain properties.
+ */
 // Current timestamp will act as break point for sharding schedule.
 const now = Date.now();
 
