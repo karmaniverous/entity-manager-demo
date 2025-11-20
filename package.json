@@ -5,8 +5,8 @@
   },
   "dependencies": {
     "@karmaniverous/controlled-proxy": "^0.1.4",
-    "@karmaniverous/entity-client-dynamodb": "^0.4.2",
-    "@karmaniverous/entity-manager": "^7.1.2",
+    "@karmaniverous/entity-client-dynamodb": "^0.5.0",
+    "@karmaniverous/entity-manager": "^7.2.0",
     "@karmaniverous/entity-tools": "^0.7.1",
     "@karmaniverous/string-utilities": "^0.2.1",
     "nanoid": "^5.1.6",
@@ -21,7 +21,7 @@
     "@faker-js/faker": "^10.1.0",
     "@karmaniverous/dynamodb-local": "^0.0.1",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.10",
+    "@vitest/coverage-v8": "^4.0.12",
     "@vitest/eslint-plugin": "^1.4.3",
     "auto-changelog": "^2.5.0",
     "eslint": "^9.39.1",
@@ -38,7 +38,7 @@
     "typedoc-plugin-replace-text": "^4.2.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.12"
   },
   "homepage": "https://github.com/karmaniverous/entity-manager-demo#readme",
   "keywords": [

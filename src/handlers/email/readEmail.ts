@@ -25,14 +25,9 @@ export async function readEmail(email: EmailItem['email'], keepKeys = false) {
     email: email.toLowerCase(),
   });
 
-  if (keepKeys) {
-    const { items } = await entityClient.getItems(entityToken, keys);
-    return items;
-  }
+  const { items } = await entityClient.getItems(entityToken, keys);
 
-  const { items } = await entityClient.getItems(entityToken, keys, {
-    removeKeys: true,
-  });
+  if (keepKeys) return items;
 
-  return items;
+  return entityClient.entityManager.removeKeys(entityToken, items);
 }

@@ -25,13 +25,9 @@ export async function readUser(userId: UserItem['userId'], keepKeys = false) {
     userId,
   });
 
-  if (keepKeys) {
-    const { items } = await entityClient.getItems(entityToken, keys);
-    return items;
-  }
+  const { items } = await entityClient.getItems(entityToken, keys);
 
-  const { items } = await entityClient.getItems(entityToken, keys, {
-    removeKeys: true,
-  });
-  return items;
+  if (keepKeys) return items;
+
+  return entityClient.entityManager.removeKeys(entityToken, items);
 }
