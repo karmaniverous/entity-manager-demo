@@ -1,4 +1,6 @@
+import type { EntityClient } from '@karmaniverous/entity-client-dynamodb';
 import type { EntityRecordByToken } from '@karmaniverous/entity-manager';
+type CCOfClient = typeof entityClient extends EntityClient<infer C> ? C : never;
 
 import { entityClient } from '../../entity-manager/entityClient';
 import type { Email } from '../../entity-manager/types';
@@ -15,12 +17,7 @@ import type { Email } from '../../entity-manager/types';
 export function readEmail(
   email: Email['email'],
   keepKeys: true,
-): Promise<
-  EntityRecordByToken<
-    Parameters<(typeof entityClient)['entityManager']['addKeys']>[0],
-    'email'
-  >[]
->; // records with keys
+): Promise<EntityRecordByToken<CCOfClient, 'email'>[]>; // records with keys
 export function readEmail(
   email: Email['email'],
   keepKeys?: false,
@@ -33,15 +30,15 @@ export async function readEmail(email: Email['email'], keepKeys = false) {
     email: email.toLowerCase(),
   });
 
-  // Retrieve records from database with token-aware, literal removeKeys.
+  // Retrieve records from database with token-aware branching.
   if (keepKeys) {
     const { items } = await entityClient.getItems(entityToken, keys, {
       removeKeys: false,
     });
     return items;
   }
-  const { items } = await entityClient.getItems(entityToken, keys, {
-    removeKeys: true,
-  });
+  // Domain path: project only domain fields to avoid keys entirely.
+  const attrs = ['created', 'email', 'userId'] as const;
+  const { items } = await entityClient.getItems(entityToken, keys, attrs);
   return items;
 }
