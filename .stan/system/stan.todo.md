@@ -126,3 +126,8 @@
   - Marked `hashKey` and `rangeKey` as string literals (`as const`) in
     src/entity-manager/entityManager.ts to prevent widening to `string` in the
     captured config. This fixes TS2769/TS2345 on addKeys/getPrimaryKey/putItems.
+
+- Cleanup: remove unused types
+  - Deleted the unused `MyConfigMap` interface and its imports in
+    src/entity-manager/entityManager.ts (config is values-/schemas-first now).
+  - Removed unused type aliases `EmailSchema` and `UserSchema` in schemas.ts.

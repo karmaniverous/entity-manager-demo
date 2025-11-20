@@ -4,26 +4,8 @@ import { defaultTranscodes } from '@karmaniverous/entity-tools';
 
 import { errorLogger } from '../util/logger';
 import { emailSchema, userSchema } from './schemas';
-import type { Email, User } from './types';
-
-// Entity interfaces combined into EntityMap.
-export interface MyConfigMap {
-  EntityMap: {
-    email: Email;
-    user: User;
-  };
-  ShardedKeys: 'beneficiaryHashKey' | 'userHashKey';
-  UnshardedKeys: 'firstNameRangeKey' | 'lastNameRangeKey';
-  TranscodedProperties:
-    | 'beneficiaryId'
-    | 'created'
-    | 'email'
-    | 'firstNameCanonical'
-    | 'lastNameCanonical'
-    | 'phone'
-    | 'updated'
-    | 'userId';
-}
+// MyConfigMap is no longer needed; entity shapes and tokens are captured
+// directly from the values-first config literal and entitiesSchema.
 
 // Current timestamp will act as break point for sharding schedule.
 const now = Date.now();

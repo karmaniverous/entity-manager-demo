@@ -19,9 +19,6 @@ export const userSchema = z.object({
   userId: z.string(),
 });
 
-export type EmailSchema = typeof emailSchema;
-export type UserSchema = typeof userSchema;
-
 export const schemas = {
   email: emailSchema,
   user: userSchema,
