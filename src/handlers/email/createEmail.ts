@@ -1,13 +1,13 @@
 import type { MakeOptional } from '@karmaniverous/entity-tools';
 
+import type { EmailItem } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
-import type { Email } from '../../entity-manager/types';
 import { readEmail } from './readEmail';
 
 /**
  * `createEmail` params.
  */
-export type CreateEmailParams = MakeOptional<Email, 'created'>;
+export type CreateEmailParams = MakeOptional<EmailItem, 'created'>;
 
 /**
  * Create an email record in the database.
@@ -22,7 +22,7 @@ export type CreateEmailParams = MakeOptional<Email, 'created'>;
  */
 export const createEmail = async (
   params: CreateEmailParams,
-): Promise<Email> => {
+): Promise<EmailItem> => {
   const entityToken = 'email';
 
   // Extract params.
@@ -37,7 +37,7 @@ export const createEmail = async (
 
   // Create new item.
   const now = Date.now();
-  const item: Email = {
+  const item: EmailItem = {
     ...rest,
     created: now,
     email: normalizedEmail,

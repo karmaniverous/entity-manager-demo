@@ -1,3 +1,4 @@
 export * from './Beneficiary';
+export * from './Email';
 export * from './entityClient';
-export * from './types';
+export * from './User';

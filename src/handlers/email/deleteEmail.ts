@@ -1,5 +1,5 @@
+import type { EmailItem } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
-import type { Email } from '../../entity-manager/types';
 import { readEmail } from './readEmail';
 
 /**
@@ -11,7 +11,7 @@ import { readEmail } from './readEmail';
  *
  * @category Email
  */
-export const deleteEmail = async (email: Email['email']): Promise<void> => {
+export const deleteEmail = async (email: EmailItem['email']): Promise<void> => {
   const entityToken = 'email';
 
   // Get record from database.

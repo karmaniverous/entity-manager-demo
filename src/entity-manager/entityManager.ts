@@ -3,9 +3,8 @@ import { createEntityManager } from '@karmaniverous/entity-manager';
 import { defaultTranscodes } from '@karmaniverous/entity-tools';
 
 import { errorLogger } from '../util/logger';
-import { emailSchema, userSchema } from './schemas';
-// MyConfigMap is no longer needed; entity shapes and tokens are captured
-// directly from the values-first config literal and entitiesSchema.
+import { emailSchema } from './Email';
+import { userSchema } from './User';
 
 // Current timestamp will act as break point for sharding schedule.
 const now = Date.now();

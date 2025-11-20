@@ -3,14 +3,14 @@ import { normstr } from '@karmaniverous/string-utilities';
 import { nanoid } from 'nanoid';
 
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/types';
+import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
  * `createUser` params.
  */
 export type CreateUserParams = MakeOptional<
-  User,
+  UserItem,
   'created' | 'firstNameCanonical' | 'lastNameCanonical' | 'updated' | 'userId'
 >;
 
@@ -25,7 +25,9 @@ export type CreateUserParams = MakeOptional<
  *
  * @category User
  */
-export const createUser = async (params: CreateUserParams): Promise<User> => {
+export const createUser = async (
+  params: CreateUserParams,
+): Promise<UserItem> => {
   const entityToken = 'user';
 
   // Extract params.
@@ -37,7 +39,7 @@ export const createUser = async (params: CreateUserParams): Promise<User> => {
 
   // Create new item.
   const now = Date.now();
-  const item: User = {
+  const item: UserItem = {
     ...rest,
     created: now,
     firstName,

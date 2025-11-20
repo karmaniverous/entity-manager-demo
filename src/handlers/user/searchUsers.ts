@@ -3,7 +3,7 @@ import { sort } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/types';
+import type { UserItem } from '../../entity-manager/User';
 
 /**
  * Parameters for the {@link searchUsers | `searchUsers`} function.
@@ -12,13 +12,13 @@ import type { User } from '../../entity-manager/types';
  */
 export interface SearchUsersParams {
   /** Unique id of related Beneficiary record. */
-  beneficiaryId?: User['beneficiaryId'];
+  beneficiaryId?: UserItem['beneficiaryId'];
 
   /** Unix ms timestamp of earliest `created` value. */
-  createdFrom?: User['created'];
+  createdFrom?: UserItem['created'];
 
   /** Unix ms timestamp of latest `created` value. */
-  createdTo?: User['created'];
+  createdTo?: UserItem['created'];
 
   /** First characters of either first or last name. Case, whitespace & diacritic insensitive. */
   name?: string;
@@ -27,7 +27,7 @@ export interface SearchUsersParams {
   pageKeyMap?: string;
 
   /** First characters of phone number. Case, whitespace & diacritic insensitive. */
-  phone?: User['phone'];
+  phone?: UserItem['phone'];
 
   /** Sort results in descending order if `true`. */
   sortDesc?: boolean;
@@ -36,10 +36,10 @@ export interface SearchUsersParams {
   sortOrder?: 'created' | 'name' | 'updated';
 
   /** Unix ms timestamp of earliest `updated` value. */
-  updatedFrom?: User['updated'];
+  updatedFrom?: UserItem['updated'];
 
   /** Unix ms timestamp of latest `updated` value. */
-  updatedTo?: User['updated'];
+  updatedTo?: UserItem['updated'];
 }
 
 /**

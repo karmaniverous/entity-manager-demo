@@ -1,5 +1,5 @@
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/types';
+import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
@@ -11,7 +11,7 @@ import { readUser } from './readUser';
  *
  * @category User
  */
-export const deleteUser = async (userId: User['userId']): Promise<void> => {
+export const deleteUser = async (userId: UserItem['userId']): Promise<void> => {
   const entityToken = 'user';
 
   // Get records from database.

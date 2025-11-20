@@ -1,8 +1,8 @@
 import { createQueryBuilder } from '@karmaniverous/entity-client-dynamodb';
 import { sort } from '@karmaniverous/entity-tools';
 
+import type { EmailItem } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
-import type { Email } from '../../entity-manager/types';
 
 /**
  * Parameters for the {@link searchEmails | `searchEmails`} function.
@@ -11,10 +11,10 @@ import type { Email } from '../../entity-manager/types';
  */
 export interface SearchEmailsParams {
   /** Unix ms timestamp of earliest `created` value. */
-  createdFrom?: Email['created'];
+  createdFrom?: EmailItem['created'];
 
   /** Unix ms timestamp of latest `created` value. */
-  createdTo?: Email['created'];
+  createdTo?: EmailItem['created'];
 
   /** Page key map from previous search page. */
   pageKeyMap?: string;
@@ -23,7 +23,7 @@ export interface SearchEmailsParams {
   sortDesc?: boolean;
 
   /** Unique id of related User record. */
-  userId?: Email['userId'];
+  userId?: EmailItem['userId'];
 }
 
 /**

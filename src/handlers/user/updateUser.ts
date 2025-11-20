@@ -2,7 +2,7 @@ import { type MakeUpdatable, updateRecord } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
 import { entityClient } from '../../entity-manager/entityClient';
-import type { User } from '../../entity-manager/types';
+import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
 /**
@@ -15,8 +15,8 @@ import { readUser } from './readUser';
  * @category User
  */
 export const updateUser = async (
-  data: MakeUpdatable<User, 'userId'>,
-): Promise<User[]> => {
+  data: MakeUpdatable<UserItem, 'userId'>,
+): Promise<UserItem[]> => {
   const entityToken = 'user';
 
   // Extract properties.

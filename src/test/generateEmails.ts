@@ -1,20 +1,20 @@
 import { faker } from '@faker-js/faker';
 
-import type { User } from '../entity-manager';
+import type { UserItem } from '../entity-manager';
 import type { CreateEmailParams } from '../handlers';
 
 /**
  * {@link generateEmails | `generateEmails`} config object.
  */
 export interface GenerateEmailsConfig {
-  /** Maximum number of emails to generate per User. Default: `1` */
+  /** Maximum number of emails to generate per UserItem. Default: `1` */
   maxPerUser?: number;
 
   /** Minimum number of emails to generate per User. Default: `0` */
   minPerUser?: number;
 
-  /** Array of {@link User | `User`} objects to create Emails for. */
-  users: User[];
+  /** Array of {@link UserItem | `UserItem`} objects to create Emails for. */
+  users: UserItem[];
 }
 
 /**
