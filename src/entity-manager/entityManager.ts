@@ -30,8 +30,8 @@ const now = Date.now();
 
 // Config object for EntityManager.
 const config = {
-  hashKey: 'hashKey',
-  rangeKey: 'rangeKey',
+  hashKey: 'hashKey' as const,
+  rangeKey: 'rangeKey' as const,
   entitiesSchema: {
     email: emailSchema,
     user: userSchema,

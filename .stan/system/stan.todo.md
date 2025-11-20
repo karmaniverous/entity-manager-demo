@@ -120,4 +120,9 @@
     to prevent widening of special keys to `string` and remove index-signature
     conflicts in token-aware helpers.
   - Removed temporary `item` casts in email/user search handlers; options.item
-    is now typed by ET.
+    is now typed by ET.
+
+- Typecheck: preserve global key tokens to restore token-aware helper typings
+  - Marked `hashKey` and `rangeKey` as string literals (`as const`) in
+    src/entity-manager/entityManager.ts to prevent widening to `string` in the
+    captured config. This fixes TS2769/TS2345 on addKeys/getPrimaryKey/putItems.
