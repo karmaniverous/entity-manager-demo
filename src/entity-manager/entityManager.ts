@@ -1,6 +1,6 @@
+import type { ConfigInput } from '@karmaniverous/entity-manager';
 import { createEntityManager } from '@karmaniverous/entity-manager';
 import { defaultTranscodes } from '@karmaniverous/entity-tools';
-import type { ConfigInput } from '@karmaniverous/entity-manager';
 
 import { errorLogger } from '../util/logger';
 import { emailSchema, userSchema } from './schemas';
