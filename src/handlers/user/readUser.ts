@@ -2,10 +2,6 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { UserItem, UserRecord } from '../../entity-manager/User';
 
 /**
- * Read user by unique userId.
- * keepKeys=true → return records; keepKeys omitted/false → return domain items.
- */
-/**
  * Read user records from the database based on unique userId.
  *
  * @param userId - User record unique id.
@@ -13,6 +9,9 @@ import type { UserItem, UserRecord } from '../../entity-manager/User';
  * @returns User record array, empty if not found.
  *
  * @category User
+ *
+ * keepKeys=true → returns records (with keys); keepKeys omitted/false →
+ * returns domain items (generated/global keys removed).
  */
 export function readUser(
   userId: UserItem['userId'],

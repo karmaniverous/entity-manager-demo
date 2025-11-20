@@ -145,4 +145,8 @@
 
 - Docs/DX: inline comments and README improvements
   - Added focused inline comments across handlers and entity manager wiring to
-    clarify flow without changing behavior; expanded README with Getting Started, local run, project layout, and DX tips.
+    clarify flow without changing behavior; expanded README with Getting Started, local run, project layout, and DX tips.
+
+- Docs/DX: finish inline docs swing & tidy style
+  - Removed stacked line comments above TypeDoc blocks; merged context into
+    primary TypeDoc; eliminated duplicate mini-docblocks; tidied imports.

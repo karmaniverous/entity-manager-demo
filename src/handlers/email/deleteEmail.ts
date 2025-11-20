@@ -2,8 +2,6 @@ import type { EmailItem } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
 import { readEmail } from './readEmail';
 
-// Email is unique by address in this demo; there will be at most one record.
-// We read -> derive exact keys -> delete for safety.
 /**
  * Delete email records from the database based on unique email.
  *
@@ -12,6 +10,9 @@ import { readEmail } from './readEmail';
  * @throws Error if email records do not exist.
  *
  * @category Email
+ *
+ * Email is unique by address in this demo. We read first, derive the exact
+ * keys, then delete for safety.
  */
 export const deleteEmail = async (email: EmailItem['email']): Promise<void> => {
   const entityToken = 'email';

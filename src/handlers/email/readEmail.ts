@@ -2,10 +2,6 @@ import type { EmailItem, EmailRecord } from '../../entity-manager/Email';
 import { entityClient } from '../../entity-manager/entityClient';
 
 /**
- * Read email by unique email (normalized).
- * keepKeys=true → return records; keepKeys omitted/false → return domain items.
- */
-/**
  * Read email records from the database based on unique email.
  *
  * @param email - Email record unique id.
@@ -13,6 +9,9 @@ import { entityClient } from '../../entity-manager/entityClient';
  * @returns Email record array, empty if not found.
  *
  * @category Email
+ *
+ * keepKeys=true → returns records (with keys); keepKeys omitted/false →
+ * returns domain items (generated/global keys removed).
  */
 export function readEmail(
   email: EmailItem['email'],

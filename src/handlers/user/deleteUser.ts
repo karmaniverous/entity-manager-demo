@@ -2,8 +2,6 @@ import { entityClient } from '../../entity-manager/entityClient';
 import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
 
-// Read -> exact keys -> delete. Enforces existence and prevents accidental
-// deletion by partial key.
 /**
  * Delete user records from the database based on unique userId.
  *
@@ -12,6 +10,9 @@ import { readUser } from './readUser';
  * @throws Error if user records do not exist.
  *
  * @category User
+ *
+ * Read first → derive exact primary keys → delete. This enforces existence
+ * and prevents accidental deletion by partial key.
  */
 export const deleteUser = async (userId: UserItem['userId']): Promise<void> => {
   const entityToken = 'user';

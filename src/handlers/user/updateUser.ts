@@ -1,12 +1,6 @@
 import { type MakeUpdatable, updateRecord } from '@karmaniverous/entity-tools';
 import { normstr } from '@karmaniverous/string-utilities';
 
-/**
- * Shallow update semantics:
- * - undefined properties are ignored
- * - null properties are assigned (and removed from final payload)
- * Returns domain items (array) for consistency with read/search handlers.
- */
 import { entityClient } from '../../entity-manager/entityClient';
 import type { UserItem } from '../../entity-manager/User';
 import { readUser } from './readUser';
@@ -17,6 +11,12 @@ import { readUser } from './readUser';
  * @param data - User update data. Only `userId` is required. Generated properties will be overwritten. `null` optional properties will be deleted.
  *
  * @throws Error if user records do not exist.
+ *
+ * Shallow update semantics:
+ * - undefined properties are ignored
+ * - null properties are assigned (and removed from final payload)
+ *
+ * Returns domain items (array) for consistency with read/search handlers.
  *
  * @category User
  */
