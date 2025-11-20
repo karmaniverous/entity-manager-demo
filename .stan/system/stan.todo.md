@@ -107,3 +107,9 @@
     literal drives index-token union; adjusted sorting to domain properties.
   - Fixed imports to new types and satisfied QueryBuilder options with a typed
     cast at the call sites (`item: ... as never`).
+
+- Interop (entity-manager): thread ET through QueryBuilder options
+  - Proposed a types-only change to make `QueryBuilderQueryOptions` carry `ET`
+    and update `BaseQueryBuilder.query` to accept the ET-aware options. This
+    eliminates the need to cast `options.item` to `never` in downstream repos
+    while preserving runtime behavior and backward compatibility.
