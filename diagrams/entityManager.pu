@@ -1,34 +1,44 @@
 @startuml entityManager
 
-allowmixing
-
 left to right direction
 
-file "logger.ts" as loggerTs #LightCyan {
-    object errorLogger
+file "entityClient.ts" as entityClientTs #LightCyan {
+    object entityClient
+}
+
+file "User.ts" as UserTs #LightCyan {
+    object userSchema
+    interface UserItem
+    interface UserRecord
+
+    userSchema --> UserItem: infer
+    UserItem -[hidden]-> UserRecord
+
+    UserRecord <- entityClient : EntityClientRecordByToken
+}
+
+file "Email.ts" as EmailTs #LightCyan {
+    object emailSchema
+    interface EmailItem
+    interface EmailRecord
+
+    emailSchema --> EmailItem  : infer
+    EmailItem -[hidden]-> EmailRecord
+
+    EmailRecord <- entityClient : EntityClientRecordByToken
 }
 
 file "entityManager.ts" as entityManagerTs #Cyan {
-    interface Email
-    interface User
-    object config
-    cloud EntityManager
+    object emConfig
 
-    Email --> EntityManager
-    User --> EntityManager
-    config --> EntityManager
-    errorLogger --> EntityManager
+    userSchema -* emConfig
+    emailSchema -* emConfig
 
-    interface EmailItem
-    interface UserItem
     object entityManager
 
-    EntityManager --> EmailItem: exports
-    EntityManager --> UserItem: exports
-    EntityManager --> entityManager: exports
-
-    UserItem -[hidden] EmailItem
-    entityManager -[hidden] UserItem
+    emConfig --> entityManager: createEntityManager
 }
+
+entityManager --* entityClient
 
 @enduml

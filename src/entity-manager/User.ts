@@ -1,5 +1,4 @@
-import { EntityClient } from '@karmaniverous/entity-client-dynamodb';
-import type { EntityRecordByToken } from '@karmaniverous/entity-manager';
+import type { EntityClientRecordByToken } from '@karmaniverous/entity-manager';
 import { z } from 'zod';
 
 import { entityClient } from '../entity-manager/entityClient';
@@ -26,6 +25,4 @@ export const userSchema = z.object({
 
 export type UserItem = z.infer<typeof userSchema>;
 
-type CCOfClient = typeof entityClient extends EntityClient<infer C> ? C : never;
-
-export type UserRecord = EntityRecordByToken<CCOfClient, 'user'>;
+export type UserRecord = EntityClientRecordByToken<typeof entityClient, 'user'>;
