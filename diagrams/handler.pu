@@ -11,9 +11,12 @@ file "logger.ts" as loggerTs #LightCyan {
     object logger
 }
 
-file "entityManager.ts" as entityManagerTs #LightCyan {
-    interface User
+file "User.ts" as userTs #LightCyan {
     interface UserItem
+    interface UserRecord
+}
+
+file "entityManager.ts" as entityManagerTs #LightCyan {
     object entityManager
 }
 
@@ -25,8 +28,8 @@ file "user-handler.ts" as searchTs #Cyan {
     object handler
 
     handler *- params
-    User <|.. params 
-    UserItem <|.. handler 
+    UserItem <|.. params 
+    UserRecord <|.. handler 
     entityManager --o handler  
     entityClient --o handler
     logger -o handler

@@ -2,7 +2,7 @@
 
 skinparam classAttributeIconSize 0
 
-interface User {
+interface UserItem {
     {field} beneficiaryId: string
     {field} created: number
     {field} firstName: string
@@ -14,7 +14,7 @@ interface User {
     {field} userId: string
 }
 
-interface UserItem {
+interface UserRecord {
     {field} beneficiaryId: string
     {field} created: number
     {field} firstName: string

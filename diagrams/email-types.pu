@@ -2,14 +2,14 @@
 
 skinparam classAttributeIconSize 0
 
-interface Email {
+interface EmailItem {
     {field} created: number
     {field} email: string
     {field} userId: string
 
 }
 
-interface EmailItem {
+interface EmailRecord {
     {field} created: number
     {field} email: string
     {field} [hashKey]: string
