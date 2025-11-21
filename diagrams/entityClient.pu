@@ -1,23 +1,47 @@
-@startuml entityClient
-
-allowmixing
+@startuml entityManager
 
 left to right direction
 
-file "logger.ts" as loggerTs #LightCyan {
-    object errorLogger
-}
-
-file "entityClient.ts" as entityClientTs #cyan {
-    object options
-    class EntityClient
-
-    errorLogger --o EntityClient
-    options --* EntityClient
-
+file "entityClient.ts" as entityClientTs #Cyan {
+    object ecConfig
     object entityClient
 
-    EntityClient --> entityClient: exports
+    ecConfig --> entityClient: constructor
 }
+
+file "User.ts" as UserTs #LightCyan {
+    object userSchema
+    interface UserItem
+    interface UserRecord
+
+    userSchema --> UserItem: infer
+    UserItem -[hidden]--> UserRecord
+
+    UserRecord <- entityClient : EntityClientRecordByToken
+}
+
+file "Email.ts" as EmailTs #LightCyan {
+    object emailSchema
+    interface EmailItem
+    interface EmailRecord
+
+    emailSchema --> EmailItem  : infer
+    EmailItem -[hidden]--> EmailRecord
+
+    EmailRecord <- entityClient : EntityClientRecordByToken
+}
+
+file "entityManager.ts" as entityManagerTs #LightCyan {
+    object emConfig
+
+    userSchema -* emConfig
+    emailSchema -* emConfig
+
+    object entityManager
+
+    emConfig --> entityManager: createEntityManager
+}
+
+entityManager --* ecConfig
 
 @enduml
