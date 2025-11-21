@@ -3,7 +3,10 @@
 left to right direction
 
 file "entityClient.ts" as entityClientTs #LightCyan {
+    object ecConfig
     object entityClient
+
+    ecConfig --> entityClient: constructor
 }
 
 file "User.ts" as UserTs #LightCyan {
@@ -12,7 +15,7 @@ file "User.ts" as UserTs #LightCyan {
     interface UserRecord
 
     userSchema --> UserItem: infer
-    UserItem -[hidden]-> UserRecord
+    UserItem -[hidden]--> UserRecord
 
     UserRecord <- entityClient : EntityClientRecordByToken
 }
@@ -23,7 +26,7 @@ file "Email.ts" as EmailTs #LightCyan {
     interface EmailRecord
 
     emailSchema --> EmailItem  : infer
-    EmailItem -[hidden]-> EmailRecord
+    EmailItem -[hidden]--> EmailRecord
 
     EmailRecord <- entityClient : EntityClientRecordByToken
 }
@@ -39,6 +42,6 @@ file "entityManager.ts" as entityManagerTs #Cyan {
     emConfig --> entityManager: createEntityManager
 }
 
-entityManager --* entityClient
+entityManager --* ecConfig
 
 @enduml
