@@ -1,4 +1,4 @@
-@startuml entityManager
+@startuml entityClient
 
 left to right direction
 
