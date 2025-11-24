@@ -1,5 +1,11 @@
 {
   "author": "Jason Williscroft",
+  "auto-changelog": {
+    "commitLimit": false,
+    "hideCredit": true,
+    "output": "CHANGELOG.md",
+    "unreleased": true
+  },
   "bugs": {
     "url": "https://github.com/karmaniverous/entity-manager-demo/issues"
   },
