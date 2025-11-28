@@ -2,59 +2,35 @@
 
 ## Next up (priority order)
 
-- Release v0.4.0
-  - Run `npm run release` (release-it; CHANGELOG, tag, publish).
-  - Ensure `.env.local` has GITHUB_TOKEN if releasing locally.
+None.
 
 ## Completed
 
-- Interop typing (local; no upstream dependency)
-  - addRangeKeyCondition/addFilterCondition accept a generic BaseQueryBuilder
-    plus the minimal structural contract (indexParamsMap + logger).
-  - TSD: added helper-assignability test to assert QueryBuilder<C, …> is
-    assignable to helper params without casts at call sites.
+**CRITICAL: Append-only list. Add new completed items at the end. Prune old completed entries from the top. Do not edit existing entries.**
 
-- TSD coverage hardening
-  - Added negative test: invalid index token when CF is present (excess
-    property checks).
-  - Confirmed non-literal removeKeys typing:
-    • getItems('token', …, { removeKeys: boolean }) → union-of-arrays
-    (EntityRecordByToken[] | EntityItemByToken[]).
-    • getItem('token', …, { removeKeys: boolean }) → union (plus undefined).
-  - Tuple projections remain pinned to Pick<…> over correct base for
-    removeKeys true/false.
+- Docs: compact README + TypeDoc guides (core & CLI Plugin section with index)
+  - Replaced long README with landing page and bulleted index.
+  - Added targeted guides under docs/guides and docs/guides/cli with children front matter on CLI index.
+  - Updated typedoc.json projectDocuments to include all guides.
+- Local DynamoDB orchestration — code foundations
+  - Types/config: added DynamodbPluginConfig.local without “ready”.
+  - Services: services/local.ts with deriveEndpoint, config-command exec (execaCommand), health probes (library preferred, SDK fallback), and start/stop/status orchestrators using buildSpawnEnv and capture/stdio precedence.
+  - CLI wiring: commands/local.ts registering “dynamodb local start|stop|status”; integrated into plugin index; start blocks until healthy and prints endpoint + export hint; status returns 0 when healthy.
 
-- Docs polish
-  - README/API includes compact CF + PageKeyByIndex example.
-  - Notes captured for non-literal removeKeys typing and projection policy
-    (auto-include uniqueProperty and explicit sort keys).
+  - Wiring tests for commands/local (mocked services; asserted env/shell/capture and port override; verified outputs/exitCode).
+  - Unit tests for services/local (deriveEndpoint; statusLocal config path success/failure).
 
-- Batch nicety tests
-  - Added “unprocessed requeue” tests for batch put/delete to pin behavior
-    when UnprocessedItems are returned (requeue verified).
+- Local DynamoDB orchestration — docs
+  - Added guides/cli/local-dynamodb.md and linked from CLI Plugin index.
+  - Documented config-first + embedded fallback, endpoint derivation, and start waiting for readiness.
 
-- Tests/lint hardening
-  - Refined batch requeue tests to avoid `any` casts and satisfy
-    `@typescript-eslint/require-await`; stubs now omit `UnprocessedItems`
-    when empty so later outputs match the expected undefined property.
+- Docs: linked Local DynamoDB guide from CLI Plugin section (guides/cli/index.md).
 
-- Variance polish (types only)
-  - Relaxed internal addQueryCondition* helpers to accept a MinimalBuilder
-    (indexParamsMap + logger) instead of a concrete QueryBuilder type.
-  - Removed local variance-bridging casts from addRangeKeyCondition and
-    addFilterCondition. No runtime behavior change.
+- Interop: removed QueryBuilder cf parameter; derive ITS/CF automatically from EntityClient via upstream CF preservation.
+  Updated createQueryBuilder, tsd tests (range-key), and docs (querying guide, type inference model).
 
-- Interop (entity-manager): make QueryBuilder.query accept ET-aware options
-  - Updated QueryBuilder.query signature to
-    QueryBuilderQueryOptions<C, ET, CF> and forwarded unchanged to super.
-  - Fixes TS2344/TS2345 in typecheck/build/docs with no runtime changes.
-- Breaking: remove removeKeys option from token-aware reads
-  - Eliminated GetItemOptions/GetItemsOptions and all removeKeys overloads.
-  - Token-aware getItem/getItems now always return records; strip keys in
-    handlers via entityManager.removeKeys when domain objects are desired.
-  - Kept the token-aware overload that accepts a TableName-bearing
-    GetCommandInput (as requested). No convenience helper added.
-  - Updated README and removed the tsd test covering removeKeys typing.
+- Follow-through: fix typecheck to build dist before tsd; resolve ESLint issues by refining QueryBuilder signature and removing conditional expect in migrate wiring test; update Querying guide note to reflect automatic index inference.
 
-- Lint: remove unused local in EntityClient.getItem
-  - Deleted the unused `entityToken` variable and assignment in getItem(...args) to satisfy @typescript-eslint/no-unused-vars.
+- Docs pass: update README guide index to replace “config‑literal cf” with
+  “values‑first config (automatic index inference)” to match the new API and
+  updated guides.

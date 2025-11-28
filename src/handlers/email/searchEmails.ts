@@ -48,16 +48,10 @@ export const searchEmails = async (params: SearchEmailsParams) => {
 
   // Concrete index token chosen from a tiny CF literal (DX sugar + typing).
   // Determine index token based on params.
-  const indexToken: keyof typeof cf.indexes =
-    hashKeyToken === 'userHashKey' ? 'userCreated' : 'created';
-
-  // CF literal for index-token narrowing (optional DX sugar).
-  const cf = {
-    indexes: {
-      created: { hashKey: 'hashKey', rangeKey: 'created' },
-      userCreated: { hashKey: 'userHashKey', rangeKey: 'created' },
-    },
-  } as const;
+  const indexToken =
+    hashKeyToken === 'userHashKey'
+      ? ('userCreated' as const)
+      : ('created' as const);
 
   // Create an email entity query & query database (ET inferred; ITS from cf).
   const result = await createQueryBuilder({
@@ -65,7 +59,6 @@ export const searchEmails = async (params: SearchEmailsParams) => {
     entityToken,
     hashKeyToken,
     pageKeyMap,
-    cf,
   })
     .addRangeKeyCondition(indexToken, {
       property: 'created',

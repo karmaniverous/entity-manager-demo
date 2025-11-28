@@ -35,7 +35,10 @@ export const generateEmails = (
       Array(
         Math.floor(Math.random() * Math.max(maxPerUser - minPerUser, 0)),
       ).map(() => ({
-        email: faker.internet.email({ firstName, lastName }),
+        email: faker.internet.email({
+          firstName: firstName ?? undefined,
+          lastName: lastName ?? undefined,
+        }),
         userId,
       })),
     )

@@ -128,7 +128,7 @@ The proxy keeps library-level debug logs quiet while preserving your own logs an
 
 ## `EntityManager` Configuration
 
-{% include figure image_path="https://raw.githubusercontent.com/karmaniverous/entity-manager-demo/main/assets/entityManager.png" caption="_`EntityManager` configuration._" %}
+{% include figure image_path="https://raw.githubusercontent.com/karmaniverous/entity-manager-demo/main/assets/entityManager.png" caption="_`EntityManager` configuration._" popup=true %}
 
 **Entity Manager** is now a values‑first + schema‑first tool:
 
@@ -340,7 +340,7 @@ This values‑first literal preserves tokens such as `hashKey`, `rangeKey`, and 
 
 ## `EntityClient` Configuration
 
-{% include figure image_path="https://raw.githubusercontent.com/karmaniverous/entity-manager-demo/main/assets/entityClient.png" caption="_`EntityClient` configuration._" %}
+{% include figure image_path="https://raw.githubusercontent.com/karmaniverous/entity-manager-demo/main/assets/entityClient.png" caption="_`EntityClient` configuration._" popup=true %}
 
 The [`EntityClient`](https://docs.karmanivero.us/entity-client-dynamodb/classes/index.EntityClient.html) class combines the AWS SDK’s DynamoDB client and document layer with a few high‑level helpers (batched writes, table lifecycle, etc.) and a typed query builder.
 
