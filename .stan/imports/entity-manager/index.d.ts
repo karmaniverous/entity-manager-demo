@@ -741,11 +741,11 @@ type EntityRecord<CC extends BaseConfigMap> = EntityItem<CC> & EntityKey<CC>;
  *
  * @category EntityClient
  */
-interface BaseEntityClientOptions<CC extends BaseConfigMap> {
+interface BaseEntityClientOptions<CC extends BaseConfigMap, CF = unknown> {
     /** Default batch process options. */
     batchProcessOptions?: Omit<BatchProcessOptions<unknown, unknown>, 'batchHandler' | 'unprocessedItemExtractor'>;
     /** {@link EntityManager | `EntityManager`} instance. */
-    entityManager: EntityManager<CC>;
+    entityManager: EntityManager<CC, CF>;
     /** Injected logger object. Must support `debug` and `error` methods. Default: `console` */
     logger?: Pick<Console, 'debug' | 'error'>;
 }
@@ -753,23 +753,27 @@ interface BaseEntityClientOptions<CC extends BaseConfigMap> {
 /**
  * Base EntityClient class. Integrates {@link EntityManager | `EntityManager`} with injected logging & enhanced batch processing.
  *
- * @typeParam CC - {@link ConfigMap | `ConfigMap`} that defines an {@link Config | `EntityManager configuration`}'s {@link EntityMap | `EntityMap`}, key properties, and {@link TranscodeRegistry | `TranscodeRegistry`}. If omitted, defaults to {@link BaseConfigMap | `BaseConfigMap`}.
+ * @typeParam CC - {@link ConfigMap | `ConfigMap`} that defines an {@link Config | `EntityManager configuration`}'s
+ *                 {@link EntityMap | `EntityMap`}, key properties, and {@link TranscodeRegistry | `TranscodeRegistry`}.
+ *                 If omitted, defaults to {@link BaseConfigMap | `BaseConfigMap`}.
+ * @typeParam CF - Values-first config literal type captured by the manager (phantom; type-only). Propagated so
+ *                 client-facing calls that return `IndexTokensOf<CF>` retain the narrowed union.
  *
  * @category EntityClient
  */
-declare abstract class BaseEntityClient<CC extends BaseConfigMap> {
+declare abstract class BaseEntityClient<CC extends BaseConfigMap, CF = unknown> {
     /** Default batch process options. */
-    readonly batchProcessOptions: NonNullable<BaseEntityClientOptions<CC>['batchProcessOptions']>;
+    readonly batchProcessOptions: NonNullable<BaseEntityClientOptions<CC, CF>['batchProcessOptions']>;
     /** {@link EntityManager | `EntityManager`} instance. */
-    readonly entityManager: EntityManager<CC>;
+    readonly entityManager: EntityManager<CC, CF>;
     /** Injected logger object. Must support `debug` and `error` methods. Default: `console` */
-    readonly logger: NonNullable<BaseEntityClientOptions<CC>['logger']>;
+    readonly logger: NonNullable<BaseEntityClientOptions<CC, CF>['logger']>;
     /**
-     * DynamoDB EntityClient constructor.
+     * Base EntityClient constructor.
      *
      * @param options - {@link BaseEntityClientOptions | `BaseEntityClientOptions`} object.
      */
-    constructor(options: BaseEntityClientOptions<CC>);
+    constructor(options: BaseEntityClientOptions<CC, CF>);
 }
 
 type ConfigOfClient<EC> = EC extends BaseEntityClient<infer CC> ? CC : never;
