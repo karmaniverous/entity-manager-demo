@@ -91,24 +91,6 @@ export const searchUsers = async (params: SearchUsersParams) => {
           : (['lastNameRangeKey'] as const)
         : (['updated'] as const);
 
-  // Route map: (hashKeyToken, rangeKeyToken) -> index token.
-  const route = {
-    hashKey: {
-      created: 'created',
-      firstNameRangeKey: 'firstName',
-      lastNameRangeKey: 'lastName',
-      phone: 'phone',
-      updated: 'updated',
-    },
-    beneficiaryHashKey: {
-      created: 'userBeneficiaryCreated',
-      firstNameRangeKey: 'userBeneficiaryFirstName',
-      lastNameRangeKey: 'userBeneficiaryLastName',
-      phone: 'userBeneficiaryPhone',
-      updated: 'userBeneficiaryUpdated',
-    },
-  } as const;
-
   // Create a query builder.
   let queryBuilder = createQueryBuilder({
     entityClient,
@@ -119,7 +101,10 @@ export const searchUsers = async (params: SearchUsersParams) => {
 
   // Iterate over range key tokens and add conditions per-index.
   for (const rangeKeyToken of rangeKeyTokens) {
-    const indexToken = route[hashKeyToken][rangeKeyToken];
+    const indexToken = entityClient.entityManager.findIndexToken(
+      hashKeyToken,
+      rangeKeyToken,
+    );
 
     // Add a range key condition.
     if (rangeKeyToken === 'created')

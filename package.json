@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@karmaniverous/controlled-proxy": "^0.1.4",
-    "@karmaniverous/entity-client-dynamodb": "^0.8.0",
-    "@karmaniverous/entity-manager": "^7.3.0",
+    "@karmaniverous/entity-client-dynamodb": "^0.8.1",
+    "@karmaniverous/entity-manager": "^7.3.1",
     "@karmaniverous/entity-tools": "^0.7.1",
     "@karmaniverous/string-utilities": "^0.2.2",
     "nanoid": "^5.1.6",
