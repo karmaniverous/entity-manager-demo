@@ -35,7 +35,7 @@
   },
   "out": "./docs/",
   "plugin": ["typedoc-plugin-mdn-links", "typedoc-plugin-replace-text"],
-  "projectDocuments": ["./CHANGELOG.md"],
+  "projectDocuments": ["./guides/stan-assistant-guide.md", "./CHANGELOG.md"],
   "replaceText": {
     "replacements": [
       {
@@ -47,5 +47,8 @@
   },
   "searchInComments": true,
   "searchInDocuments": true,
+  "validation": {
+    "notDocumented": true
+  },
   "visibilityFilters": {}
 }
